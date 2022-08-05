@@ -1,2 +1,2 @@
 # Infomation
-A repository to store my own roblox scripts
+A repository to save my own roblox scripts
