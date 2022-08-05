@@ -222,7 +222,7 @@ misc:AddBind({
     end
 })
 
---// Bypass basic anti-cheat
+--// Spoof walk speed & jump power
 do
     local get_rawmt = getrawmetatable(game)
     local old_index = get_rawmt.__index;
