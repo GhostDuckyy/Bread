@@ -3,7 +3,6 @@ local game_list = {
 }
 
 for i,v in next, (game_list) do
-    print(i,v)
     if game.PlaceId == tonumber(i) then
         loadstring(game:HttpGet(v,true))()
     end
