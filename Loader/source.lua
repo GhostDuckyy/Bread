@@ -5,10 +5,9 @@ local game_list = {
     ["8540346411"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Rebirth%20Champions%20X.lua",
 }
 
-for i,v in next, (game_list) do
-    if game.PlaceId == tonumber(i) then
-        if v ~= nil and type(v) == "string" then
-            local url = v;
+for ID, url in next, (game_list) do
+    if string.find(ID,game.PlaceId) or string.match(ID,game.PlaceId) then
+        if url ~= nil then
             loadstring(game:HttpGet(url,true))()
         end
     end
