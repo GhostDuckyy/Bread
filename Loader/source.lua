@@ -8,7 +8,8 @@ local game_list = {
 for ID, url in next, (game_list) do
     if string.find(ID,game.PlaceId) or string.match(ID,game.PlaceId) then
         if url ~= nil then
-            loadstring(game:HttpGet(url,true))()
+            loadstring(game:HttpGet(url,true))();
+            break;
         end
     end
 end
