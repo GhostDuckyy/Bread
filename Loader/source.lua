@@ -3,6 +3,8 @@ local game_list = {
     ["1257535190"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Godzilla_Sim.lua",
     -- Rebirth Champions X
     ["8540346411"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Rebirth%20Champions%20X.lua",
+    -- Tapping Simulator
+    ["9498006165"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/Storage/Tapping%20Simulator.lua"
 }
 
 for ID, url in next, (game_list) do
