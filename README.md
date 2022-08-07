@@ -1,7 +1,7 @@
 # Infomation
 A repository to save my own roblox scripts
 
-## Discord
+######### Discord
 [Link](https://discord.gg/TFUeFEESVv)
 ## Loadstring:
 ```lua
