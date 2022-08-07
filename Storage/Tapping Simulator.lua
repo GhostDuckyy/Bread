@@ -24,6 +24,7 @@ local PathfindingService = game:GetService("PathfindingService")
 
 --// event
 local Tap_event = ReplicatedStorage["Events"]:WaitForChild("Tap")
+local Rebirth_event = ReplicatedStorage["Events"]:WaitForChild("Rebirth")
 local TP_event = ReplicatedStorage["Events"]:WaitForChild("Teleport")
 
 --// module
@@ -44,6 +45,10 @@ local Self_data = getData(LocalPlayer);
 getgenv().Setting = {
     AFK = false,
     Auto_Tap = false,
+    Rebirth = {
+        bool = false,
+        value = nil,
+    },
     Pets = {
         EquipBest = false,
     }
@@ -72,6 +77,47 @@ function Tap()
         end
     end)
 end
+do
+    local rebirth_table = {}
+    local auto_Rebirth = getgenv().Setting.Rebirth
+    if Self_data then
+        for i,v in ipairs(Self_data.rebirthButtons) do
+            if not table.find(rebirth_table,v) then
+                table.insert(rebirth_table,v)
+            end
+        end
+        main:Dropdown({Text = "Rebirth list",List = rebirth_table,Callback = function(x)
+            auto_Rebirth.value = x;
+        end})
+        main:Toggle({Text = "Auto rebirth",Flag = nil,Callback = function(x)
+            auto_Rebirth.bool = x;
+            if x then
+                Rebirth()
+            end
+        end})
+    else
+        Self_data(LocalPlayer)
+    end
+    function Rebirth()
+        spawn(function()
+            while wait(.1) do
+                if auto_Rebirth.bool ~= true then break; end
+                if auto_Rebirth.value ~= nil then
+                    if Rebirth_event then
+                        Rebirth_event:FireServer(tonumber(auto_Rebirth.value))
+                    end
+                else
+                    make_notif("Select a target for rebirth",10)
+                    while wait(.1) do
+                        if auto_Rebirth.bool ~= true then break; end
+                        if auto_Rebirth.value ~= nil then break; end
+                    end
+                end
+            end
+        end)
+    end
+end
+
 main:Toggle({Text = "White screen",Flag = nil,Callback = function(x)
     getgenv().Setting.AFK = x;
 end})
@@ -154,13 +200,13 @@ end})
 misc:Prompt({
     Text = "Copy discord invite",
     OnConfirm = function(x)
-        make_notif("Copied invite link",10,Color3.new(.2,.8,0))
+        make_notif("Copied invite link",10,Color3.new(0.1,0.9,0))
         setclipboard("https://discord.gg/TFUeFEESVv")
     end
 })
 
-misc:Label({Text = "Ui: Revenant UI Library",Color = Color3.new(0.2,0.8,0)})
-misc:Label({Text = "Scripting: Ghost-Ducky#7698",Color = Color3.new(0.2,0.8,0)})
+misc:Label({Text = "Ui: Revenant UI Library",Color = Color3.new(0.1,0.9,0)})
+misc:Label({Text = "Scripting: Ghost-Ducky#7698",Color = Color3.new(0.1,0.9,0)})
 
 --// Spoof walkspeed & jumppower
 local completed,errors = pcall(function()
