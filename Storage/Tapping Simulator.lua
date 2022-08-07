@@ -133,8 +133,8 @@ game:GetService("UserInputService").WindowFocused:Connect(function()
 end)
 
 main:Label({Text = "Character", Color = Color3.new(1,1,1)})
-getgenv().WS = 16;getgenv().JP = 50;
-main:Slider({Text = "Walk speed",Flag = false,Postfix = " value",Default = 16,Minimum = 0,Maximum = 500,Callback = function(x)
+getgenv().WS = 20;getgenv().JP = 50;
+main:Slider({Text = "Walk speed",Flag = false,Postfix = " value",Default = 20,Minimum = 0,Maximum = 500,Callback = function(x)
     getgenv().WS = tonumber(x);
 end})
 main:Slider({Text = "Jump power",Flag = false,Postfix = " value",Default = 50,Minimum = 0,Maximum = 500,Callback = function(x)
@@ -157,6 +157,33 @@ main:Button({Text = "Infinite double jumps",Callback = function()
         Self_data = getData(LocalPlayer);
     end
 end})
+
+local Teleport_List = {
+    [1] = {Name = "Spawn",pos = CFrame.new(-74.69972229003906, 16.553403854370117, -476.1826477050781)},
+    [2] = {Name = "Forest island",pos = CFrame.new(-163.98446655273438, 977.2182006835938, -403.33941650390625)},
+    [3] = {Name = "Flower island",pos = CFrame.new(-179.51564025878906, 1514.4530029296875, -682.4987182617188)},
+    [4] = {Name = "Swamp island",pos = CFrame.new(-264.35888671875, 2113.3935546875, -694.6613159179688)},
+    [5] = {Name = "Snow island",pos = CFrame.new(-201.77197265625, 2934.2529296875, -470.40875244140625)},
+    [6] = {Name = "Desert island",pos = CFrame.new(-166.28515625, 4225.35107421875, -779.1531372070312)},
+    [7] = {Name = "Death island",pos = CFrame.new(-276.2012634277344, 5415.24609375, -480.28778076171875)},
+    [8] = {Name = "Beach island",pos = CFrame.new(-140.3450927734375, 6872.287109375, -495.68212890625)},
+    [9] = {Name = "Mines island",pos = CFrame.new(-243.2586669921875, 8365.88671875, -483.8897705078125)},
+    [10] = {Name = "Cloud island",pos = CFrame.new(-253.30348205566406, 11250.62890625, -237.8885955810547)},
+    [11] = {Name = "Coral island",pos = CFrame.new(-511.0211181640625, 13801.7646484375, -543.2418212890625)},
+    [12] = {Name = "Darkheart island",pos = CFrame.new(-408.697509765625, 17169.822265625, -552.0464477539062)},
+    [13] = {Name = "Flamelands world",pos = CFrame.new(1152.3616943359375, 148.96311950683594, -2859.748046875)},
+    [14] = {Name = "Molten island",pos = CFrame.new(1280.5958251953125, 2183.499267578125, -2885.144287109375)},
+    [15] = {Name = "Blue Magma island",pos = CFrame.new(1401.12939453125, 5230.490234375, -2953.919677734375)},
+    [16] = {Name = "Purple Magma island",pos = CFrame.new(1319.7027587890625, 7651.8984375, -2958.0576171875)},
+}
+
+for i,v in ipairs(Teleport_List) do
+    local name = v.Name
+    local cf = v.pos
+    tp:Button({Text = tostring(name),Callback = function()
+        Teleport(cf)
+    end})
+end
 
 misc:Button({Text = "Unlock all portals",Callback = function()
     if Self_data then
@@ -194,9 +221,13 @@ misc:Button({Text = "Inf world boost (visual)",Callback = function()
     end
 end})
 
-misc:Keybind({Text = "Toggle UI",Default = Enum.KeyCode.RightControl,Callback = function()
-    Library:Toggle()
-end})
+misc:Keybind({
+    Text = "Toggle UI",
+    Default = Enum.KeyCode.RightControl,
+    Callback = function()
+        Library:Toggle()
+    end
+})
 misc:Prompt({
     Text = "Copy discord invite",
     OnConfirm = function(x)
