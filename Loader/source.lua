@@ -1,6 +1,6 @@
 local game_list = {
     -- Blox fruit
-    ["2753915549 4442272183 4442272183"] = "nil",
+    ["2753915549 4442272183 4442272183"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Bread_Fruit.lua",
     -- Godzilla Simulator
     ["1257535190"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Godzilla_Sim.lua",
     -- Rebirth Champions X
@@ -11,7 +11,7 @@ local game_list = {
 
 for ID, url in next, (game_list) do
     if string.find(ID,tostring(game.PlaceId)) or string.match(ID,tostring(game.PlaceId)) then
-        if url ~= nil and url ~= "nil" then
+        if url ~= nil then
             loadstring(game:HttpGet(url,true))();
             break;
         end
