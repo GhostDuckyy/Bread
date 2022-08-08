@@ -26,6 +26,7 @@ local PathfindingService = game:GetService("PathfindingService")
 local Tap_event = ReplicatedStorage["Events"]:WaitForChild("Tap")
 local Rebirth_event = ReplicatedStorage["Events"]:WaitForChild("Rebirth")
 local TP_event = ReplicatedStorage["Events"]:WaitForChild("Teleport")
+local Hatch_event = ReplicatedStorage["Events"]:WaitForChild("HatchEgg")
 
 --// module
 local Data_module = require(ReplicatedStorage["Classes"]:WaitForChild("Player")).players
@@ -51,8 +52,10 @@ getgenv().Setting = {
         value = nil,
     },
     Eggs = {
-        Type = "",
-        Spin = false,
+        List = {},
+        Type = nil,
+        Hatch = false,
+        value = 1,
     },
 }
 
@@ -85,6 +88,51 @@ if firesignal then
             end
         end)
     end
+end
+
+for i,v in pairs(workspace["Shops"]:GetChildren()) do
+    if v:IsA("Model") then
+        if not table.find(getgenv().Setting.Eggs.List,tostring(v.Name)) then
+            table.insert(getgenv().Setting.Eggs.List,tostring(v.Name))
+        end
+    end
+end
+pets:Dropdown({Text = "Select Egg",List = getgenv().Setting.Eggs.List,Callback = function(x)
+    getgenv().Setting.Eggs.Type = x;
+end})
+pets:Toggle({Text = "Auto hatch",Flag = nil,Callback = function(x)
+    getgenv().Setting.Eggs.Hatch = x;
+    if x then
+        Auto_hatch()
+    end
+end})
+pets:Toggle({Text = "Triple hatch",Flag = nil,Callback = function(x)
+    if x then
+        getgenv().Setting.Eggs.value = 3
+    else
+        getgenv().Setting.Eggs.value = 1
+    end
+end})
+function Auto_hatch()
+    spawn(function()
+        while wait(.1) do
+            if getgenv().Setting.Eggs.Hatch ~= true then break; end
+            if Hatch_event then
+                if getgenv().Setting.Eggs.Type ~= nil then
+                    local tables = {}
+                    local egg = tostring(getgenv().Setting.Eggs.Type)
+                    local number = tonumber(getgenv().Setting.Eggs.value)
+                    Hatch_event:InvokeServer(tables,egg,number)
+                else
+                    make_notif("Select egg to hatch",nil,Color3.new(1,0.3,0))
+                    while wait(.1) do
+                        if getgenv().Setting.Eggs.Hatch ~= true then break; end
+                        if getgenv().Setting.Eggs.Type ~= nil then break; end
+                    end
+                end
+            end
+        end
+    end)
 end
 
 main:Label({Text = "Main", Color = Color3.new(1,1,1)})
