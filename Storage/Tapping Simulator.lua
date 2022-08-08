@@ -27,6 +27,8 @@ local Tap_event = ReplicatedStorage["Events"]:WaitForChild("Tap")
 local Rebirth_event = ReplicatedStorage["Events"]:WaitForChild("Rebirth")
 local TP_event = ReplicatedStorage["Events"]:WaitForChild("Teleport")
 local Hatch_event = ReplicatedStorage["Events"]:WaitForChild("HatchEgg")
+local Remove_pets_event = ReplicatedStorage["Events"]:WaitForChild("RemovePet")
+local Claim_Achievements_event = ReplicatedStorage["Events"]:WaitForChild("ClaimRankReward")
 
 --// module
 local Data_module = require(ReplicatedStorage["Classes"]:WaitForChild("Player")).players
@@ -47,6 +49,7 @@ getgenv().Setting = {
     whitescreen = false,
     Auto_Tap = false,
     EquipBest = false,
+    Auto_Claim_Achievement = false,
     Rebirth = {
         bool = false,
         value = nil,
@@ -192,6 +195,20 @@ do
         end)
     end
 end
+
+main:Toggle({Text = "Auto clam achievements",Flag = nil,Callback = function(x)
+    getgenv().Setting.Auto_Claim_Achievement = x;
+    if x then
+        spawn(function()
+            while wait(.1) do
+                if getgenv().Setting.Auto_Claim_Achievement ~= true then break; end
+                if Claim_Achievements_event then
+                    Claim_Achievements_event:FireServer()
+                end
+            end
+        end)
+    end
+end})
 
 main:Toggle({Text = "White screen",Flag = nil,Callback = function(x)
     getgenv().Setting.whitescreen = x;
