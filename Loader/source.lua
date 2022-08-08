@@ -12,7 +12,13 @@ local game_list = {
 for ID, url in next, (game_list) do
     if string.find(ID,tostring(game.PlaceId)) or string.match(ID,tostring(game.PlaceId)) then
         if url ~= nil then
-            loadstring(game:HttpGet(url,true))();
+            local s,e = pcall(function() loadstring(game:HttpGet(url,true))(); end)
+            if s then
+                warn("Bread🍞 Success to load!")
+            end
+            if e and not s then
+                warn("Bread🍞 Failed to load!")
+            end
             break;
         end
     end
