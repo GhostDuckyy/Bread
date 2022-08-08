@@ -43,22 +43,49 @@ local Self_data = getData(LocalPlayer);
 
 --// Setting
 getgenv().Setting = {
-    AFK = false,
+    whitescreen = false,
     Auto_Tap = false,
+    EquipBest = false,
     Rebirth = {
         bool = false,
         value = nil,
     },
-    Pets = {
-        EquipBest = false,
-    }
+    Eggs = {
+        Type = "",
+        Spin = false,
+    },
 }
 
 
 --// Script
 local main = Library:Window({Text = "Bread"})
+local pets = Library:Window({Text = "Pets"})
 local tp = Library:Window({Text = "Teleport"})
 local misc = Library:Window({Text = "Misc"})
+
+if firesignal then
+    pets:Toggle({Text = "Equip best pets",Flag = nil,Callback = function(x)
+        getgenv().Setting.EquipBest  = x;
+        if x then
+            Equip_Best()
+        end
+    end})
+    function Equip_Best()
+        spawn(function()
+            while wait(.5) do
+                if getgenv().Setting.EquipBest ~= true then break; end
+                if LocalPlayer.PlayerGui:FindFirstChild("UI") and LocalPlayer.PlayerGui["UI"]:FindFirstChild("Inventory") then
+                    local path = LocalPlayer.PlayerGui["UI"]["Inventory"]["Buttons"]:FindFirstChild("Equip")
+                    pcall(function()
+                        if path then
+                            firesignal(path.Activated)
+                        end
+                    end)
+                end
+            end
+        end)
+    end
+end
 
 main:Label({Text = "Main", Color = Color3.new(1,1,1)})
 main:Toggle({Text = "Auto tap",Flag = nil,Callback = function(x)
@@ -119,15 +146,15 @@ do
 end
 
 main:Toggle({Text = "White screen",Flag = nil,Callback = function(x)
-    getgenv().Setting.AFK = x;
+    getgenv().Setting.whitescreen = x;
 end})
 game:GetService("UserInputService").WindowFocusReleased:Connect(function()
-    if getgenv().Setting.AFK then
+    if getgenv().Setting.whitescreen then
         RunService:Set3dRenderingEnabled(false);
     end
 end)
 game:GetService("UserInputService").WindowFocused:Connect(function()
-    if getgenv().Setting.AFK then
+    if getgenv().Setting.whitescreen then
         RunService:Set3dRenderingEnabled(true);
     end
 end)
