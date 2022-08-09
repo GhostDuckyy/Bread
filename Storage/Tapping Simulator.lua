@@ -267,19 +267,22 @@ local Teleport_List = {
     [14] = {Name = "Molten island",pos = CFrame.new(1280.5958251953125, 2183.499267578125, -2885.144287109375)},
     [15] = {Name = "Blue Magma island",pos = CFrame.new(1401.12939453125, 5230.490234375, -2953.919677734375)},
     [16] = {Name = "Purple Magma island",pos = CFrame.new(1319.7027587890625, 7651.8984375, -2958.0576171875)},
+    [17] = {Name = "Yellow Magma island", pos = CFrame.new(1403.5440673828125, 10391.9912109375, -2903.138427734375)},
 }
 
 for i,v in ipairs(Teleport_List) do
-    local name = v.Name
-    local cf = v.pos
-    tp:Button({Text = tostring(name),Callback = function()
-        Teleport(cf)
-    end})
+    if v.Name and v.pos then
+        local name = v.Name
+        local cf = v.pos
+        tp:Button({Text = tostring(name),Callback = function()
+            Teleport(cf)
+        end})
+    end
 end
 
 misc:Button({Text = "Unlock all portals",Callback = function()
     if Self_data then
-        local list = {"Mine","Coral","Beach","Forest","Magma","Swamp","Snow","Desert","Death","Flower","Darkheart","Dominus","Cloud","Molten","Blue Magma","Purple Magma",}
+        local list = {"Mine","Coral","Beach","Forest","Magma","Swamp","Snow","Desert","Death","Flower","Darkheart","Dominus","Cloud","Molten","Blue Magma","Purple Magma","Yellow Magma"}
         local portals_Table = nil;
         for i,v in next, (Self_data) do
             if tostring(i):lower() == tostring("unlockedPortals"):lower() then
