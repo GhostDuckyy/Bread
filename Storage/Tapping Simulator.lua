@@ -65,9 +65,91 @@ getgenv().Setting = {
 
 --// Script
 local main = Library:Window({Text = "Bread"})
+local plrs = Library:Window({Text = "Players"})
 local pets = Library:Window({Text = "Pets"})
 local tp = Library:Window({Text = "Teleport"})
 local misc = Library:Window({Text = "Misc"})
+
+plrs:Label({Text = "Character", Color = Color3.new(1,1,1)})
+getgenv().WS = 16;getgenv().JP = 50;
+plrs:Slider({Text = "Walk speed",Flag = false,Postfix = " value",Default = 16,Minimum = 0,Maximum = 500,Callback = function(x)
+    getgenv().WS = tonumber(x);
+end})
+plrs:Slider({Text = "Jump power",Flag = false,Postfix = " value",Default = 50,Minimum = 0,Maximum = 500,Callback = function(x)
+    getgenv().JP = tonumber(x);
+end})
+RunService.Stepped:Connect(function()
+    if LocalPlayer.Character then
+        local chr = LocalPlayer.Character
+        if chr:FindFirstChild("Humanoid") then
+            chr["Humanoid"].WalkSpeed = getgenv().WS;
+            chr["Humanoid"].JumpPower = getgenv().JP;
+            if chr["Humanoid"].UseJumpPower ~= true then chr["Humanoid"].UseJumpPower = true end
+        end
+    end
+end)
+plrs:Button({Text = "Infinite double jumps",Callback = function()
+    if Self_data then
+        Self_data.jumps = math.huge;
+    else
+        Self_data = getData(LocalPlayer);
+    end
+end})
+
+local table_plr = {}
+local target_plr = nil;
+table.clear(table_plr)
+for i,v in ipairs(Players:GetPlayers()) do
+    if v.DisplayName then
+        if not table.find(table_plr,tostring(v.DisplayName)) then
+            table.insert(table_plr,tostring(v.DisplayName))
+        end
+    else
+        if not table.find(table_plr,tostring(v.Name)) then
+            table.insert(table_plr,tostring(v.Name))
+        end
+    end
+end
+--[[
+    Players.PlayerAdded:Connect(function(v)
+    if v.DisplayName then
+        if not table.find(table_plr,tostring(v.DisplayName)) then
+            table.insert(table_plr,tostring(v.DisplayName))
+        end
+    else
+        if not table.find(table_plr,tostring(v.Name)) then
+            table.insert(table_plr,tostring(v.Name))
+        end
+    end
+end)
+Players.PlayerRemoving:Connect(function(v)
+    if table.find(table_plr,tostring(v.DisplayName)) then
+        table.remove(table_plr,table.find(table_plr,tostring(v.DisplayName)))
+    elseif table.find(table_plr,tostring(v.Name)) then
+        table.remove(table_plr,table.find(table_plr,tostring(v.Name)))
+    end
+end)
+]]
+plrs:Label({Text = "Other players",Color = Color3.new(1,1,1)})
+plrs:Dropdown({Text = "Select a players",List = table_plr,Callback = function(x)
+    target_plr = tostring(x);
+end})
+plrs:Button({Text = "Teleport to players",Callback = function()
+    local p = nil;
+    for i,v in ipairs(Players:GetPlayers()) do
+        if tostring(v.DisplayName) == target_plr or tostring(v.Name) == target_plr then
+            p = v;
+        end
+    end
+    if LocalPlayer.Character and p.Character then
+        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local cf = hrp.CFrame * CFrame.new(0,0,-3)
+            Teleport(cf)
+        end
+    end
+end})
+
 
 if firesignal then
     pets:Toggle({Text = "Equip best pets",Flag = nil,Callback = function(x)
@@ -92,7 +174,6 @@ if firesignal then
         end)
     end
 end
-
 for i,v in pairs(workspace["Shops"]:GetChildren()) do
     if v:IsA("Model") then
         if not table.find(getgenv().Setting.Eggs.List,tostring(v.Name)) then
@@ -223,32 +304,6 @@ game:GetService("UserInputService").WindowFocused:Connect(function()
         RunService:Set3dRenderingEnabled(true);
     end
 end)
-
-main:Label({Text = "Character", Color = Color3.new(1,1,1)})
-getgenv().WS = 20;getgenv().JP = 50;
-main:Slider({Text = "Walk speed",Flag = false,Postfix = " value",Default = 20,Minimum = 0,Maximum = 500,Callback = function(x)
-    getgenv().WS = tonumber(x);
-end})
-main:Slider({Text = "Jump power",Flag = false,Postfix = " value",Default = 50,Minimum = 0,Maximum = 500,Callback = function(x)
-    getgenv().JP = tonumber(x);
-end})
-RunService.Stepped:Connect(function()
-    if LocalPlayer.Character then
-        local chr = LocalPlayer.Character
-        if chr:FindFirstChild("Humanoid") then
-            chr["Humanoid"].WalkSpeed = getgenv().WS;
-            chr["Humanoid"].JumpPower = getgenv().JP;
-            if chr["Humanoid"].UseJumpPower ~= true then chr["Humanoid"].UseJumpPower = true end
-        end
-    end
-end)
-main:Button({Text = "Infinite double jumps",Callback = function()
-    if Self_data then
-        Self_data.jumps = 999e9;
-    else
-        Self_data = getData(LocalPlayer);
-    end
-end})
 
 local Teleport_List = {
     [1] = {Name = "Spawn",pos = CFrame.new(-74.69972229003906, 16.553403854370117, -476.1826477050781)},
