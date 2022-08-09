@@ -136,12 +136,21 @@ auto:NewSlider("Size","Set hithox size",150,3,function(x)
 end)
 auto:NewColorPicker("Hitbox colors","Set hitbox colors to selected",getgenv().Hitbox.Color,function(x)
     getgenv().Hitbox.Color = x;
+    if x then
+        for i,v in ipairs(Players:GetPlayers()) do
+            if v ~= LocalPlayer then
+                if v.Character then
+                    Hitbox_expander(v.Character)
+                end
+            end
+        end
+    end
 end)
 
 function Hitbox_expander(char)
     if char:FindFirstChild("HumanoidRootPart") then
         local z = Players:GetPlayerFromCharacter(char)
-        local RS = RunService.RenderStepped:Connect(function()
+        local RS = RunService.Stepped:Connect(function()
             local hrp = char:FindFirstChild("HumanoidRootPart")
             local number = tonumber(getgenv().Hitbox.Size)
             if hrp then
@@ -165,9 +174,6 @@ end
 
 for i,v in ipairs(Players:GetPlayers()) do
     if v ~= LocalPlayer then
-        if v.Character then
-            Hitbox_expander(v.Character)
-        end
         v.CharacterAdded:Connect(function(char)
             Hitbox_expander(char)
         end)
