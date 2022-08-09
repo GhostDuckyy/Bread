@@ -7,7 +7,7 @@ end
 --// Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rain-Design/Libraries/main/Revenant.lua", true))()
 local Flags = Library.Flags
-Library.DefaultColor =Color3.fromRGB(65, 143, 232);
+Library.DefaultColor =Color3.fromHex("#FF3131");
 
 --// Service
 local Players = game:GetService("Players")
