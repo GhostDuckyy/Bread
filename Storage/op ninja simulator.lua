@@ -375,6 +375,12 @@ end)
 
 credit:NewLabel("UI: Kavo ui library | xHeptc#2255")
 credit:NewLabel("Scripting: Ghost-Ducky#7698")
+credit:NewButton("Copy discord invite","Join discord :)",function()
+    if setclipboard then
+        local x,y = pcall(function()setclipboard("https://discord.gg/TFUeFEESVv")end)
+        if x then warn("Success copied discord invite link") end
+    end
+end)
 
 --// Spoof value
 local completed,errors = pcall(function()
