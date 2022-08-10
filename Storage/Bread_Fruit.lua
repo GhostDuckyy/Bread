@@ -5,7 +5,7 @@ function decode(strs)
         local _Pog = syn.crypt.base64.decode(code)
         return _Pog
     else
-        local _Pog = crypt.base64decode(code) or crypt.base64.decode or crypt.base64_decode(code) or base64.decode(code) or base64_decode(code)
+        local _Pog = crypt.base64decode(code) or crypt.base64.decode(code) or crypt.base64_decode(code) or base64.decode(code) or base64_decode(code)
         return _Pog
     end
 end
