@@ -28,6 +28,7 @@ getgenv().Setting = {
     whitescreen = false,
     WS = 16,
     JP = 50,
+    Gravity = 196.2,
 }
 getgenv().Hitbox = {
     Enabled = false,
@@ -73,7 +74,7 @@ local visual = w:NewTab("Visual")
 local misc = w:NewTab("Misc")
 
 local auto = main:NewSection("Automation")
-local chr = plrs:NewSection("Character")
+local _Client = plrs:NewSection("Client")
 local other_plr = plrs:NewSection("Other players")
 local _visual = visual:NewSection("Visual")
 local other = misc:NewSection("Other")
@@ -189,13 +190,17 @@ Players.PlayerAdded:Connect(function(v)
 end)
 
 
-chr:NewSlider("Walk speed","Change your character walk speed",500,16,function(x)
+_Client:NewSlider("Walk speed","Change your character walk speed",500,16,function(x)
     getgenv().Setting.WS = tonumber(x);
 end)
 
-chr:NewSlider("Jump height","Change your character jump height",500,50,function(x)
+_Client:NewSlider("Jump height","Change your character jump height",500,50,function(x)
     getgenv().Setting.JP = tonumber(x);
 end)
+_Client:NewSlider("Jump height","Change your character jump height",196.2,1,function(x)
+    getgenv().Setting.Gravity = tonumber(x);
+end)
+
 RunService.Stepped:Connect(function()
     if LocalPlayer.Character then
         local Humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
@@ -203,6 +208,9 @@ RunService.Stepped:Connect(function()
             Humanoid.WalkSpeed = getgenv().Setting.WS
             Humanoid.JumpPower = getgenv().Setting.JP
             if Humanoid.UseJumpPower ~= true then Humanoid.UseJumpPower = true end
+        end
+        if workspace then
+            workspace.Gravity = getgenv().Setting.Gravity
         end
     end
 end)
@@ -376,6 +384,24 @@ other:NewButton("Anti afk","Anti kick you when idled 20 mins",function()
         if s then
             warn("Anti AFK success loaded")
         end
+    end
+end)
+other:NewButton("Remove nametag","Remove nametag form character",function()
+    if LocalPlayer.Character then
+        local tag = LocalPlayer.Character:FindFirstChild("NameBbGui")
+        if tag then tag:Destroy() end
+    end
+end)
+other:NewButton("Remove classtag","Remove classtag form character",function()
+    if LocalPlayer.Character then
+        local tag = LocalPlayer.Character:FindFirstChild("ClassBbGui")
+        if tag then tag:Destroy() end
+    end
+end)
+other:NewButton("Remove ranktag","Remove ranktag form character",function()
+    if LocalPlayer.Character then
+        local tag = LocalPlayer.Character:FindFirstChild("RankBbGui")
+        if tag then tag:Destroy() end
     end
 end)
 
