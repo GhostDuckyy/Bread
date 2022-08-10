@@ -50,8 +50,7 @@ local no_part,yes_part = pcall(function()
     getgenv().Part = Instance.new("Part",game:GetService("Workspace"))
     getgenv().Part.Anchored = true
     getgenv().Part.Size = Vector3.new(150,1,150)
-    local random = math.random(5000,500)
-    local cf = CFrame.new(9999,9999,9999) + CFrame.new(random,random,random)
+    local cf = CFrame.new(9999,9999,9999)
     getgenv().Part.CFrame = cf
     getgenv().Part.Material = Enum.Material.ForceField
 
@@ -140,43 +139,52 @@ if firesignal then
     for i,v in pairs(getgenv().upgrade) do
         auto:NewToggle(tostring(v.name),tostring("Auto upgrade "..v.name),function(x)
             v.bool = x;
+            --[[if x then
+                auto_upgrade()
+            end]]
         end)
     end
-    spawn(function()
-        while wait(.35) do
-            if LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF") then
-                local path = LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF")
-
-                local sword = path["SwordF"]:FindFirstChild("SwordImgBtn")
-                local shuriken = path["ShurikenF"]:FindFirstChild("ShurikenImgBtn")
-                local class = path["ClassF"]:FindFirstChild("ClassImgBtn")
-                local realm = path["AscendF"]:FindFirstChild("AscendImgBtn")
-
-                for i,v in next, getgenv().upgrade do
-                    if i == 1 then
-                        if sword and v.bool then
-                            firesignal(sword.MouseButton1Down)
+    function auto_upgrade()
+        spawn(function()
+            while wait(.35) do
+                if LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF") then
+                    --// path to upgrade frame
+                    local path = LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF")
+                    if path then
+                        --// shortcut
+                        local value = getgenv().upgrade
+                        --// button
+                        local sword = path["SwordF"]:FindFirstChild("SwordImgBtn")
+                        local shuriken = path["ShurikenF"]:FindFirstChild("ShurikenImgBtn")
+                        local class = path["ClassF"]:FindFirstChild("ClassImgBtn")
+                        local realm = path["AscendF"]:FindFirstChild("AscendImgBtn")
+                        --// fire button
+                        if sword then
+                            if value[1].bool then
+                                firesignal(sword.MouseButton1Down)
+                            end
                         end
-                    end
-                    if i == 2 then
-                        if shuriken and v.bool then
-                            firesignal(shuriken.MouseButton1Down)
+                        if shuriken then
+                            if value[2].bool then
+                                firesignal(shuriken.MouseButton1Down)
+                            end
                         end
-                    end
-                    if i == 3 then
-                        if class and v.bool then
-                            firesignal(class.MouseButton1Down)
+                        if class then
+                            if value[3].bool then
+                                firesignal(class.MouseButton1Down)
+                            end
                         end
-                    end
-                    if i == 4 then
-                        if realm and v.bool then
-                            firesignal(realm.MouseButton1Down)
+                        if realm then
+                            if value[4].bool then
+                                firesignal(realm.MouseButton1Down)
+                            end
                         end
                     end
                 end
             end
-        end
-    end)
+        end)
+    end
+    auto_upgrade()
 end
 
 auto:NewLabel("Hitbox expander")
