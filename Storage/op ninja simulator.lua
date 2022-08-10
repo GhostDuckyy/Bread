@@ -50,7 +50,6 @@ local no_part,yes_part = pcall(function()
     getgenv().Part = Instance.new("Part",game:GetService("Workspace"))
     getgenv().Part.Anchored = true
     getgenv().Part.Size = Vector3.new(150,1,150)
-
     local random = math.random(5000,500)
     local cf = CFrame.new(9999,9999,9999) + CFrame.new(random,random,random)
     getgenv().Part.CFrame = cf
@@ -147,24 +146,33 @@ if firesignal then
         while wait(.35) do
             if LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF") then
                 local path = LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF")
-                local shortcut = getgenv().upgrade
 
                 local sword = path["SwordF"]:FindFirstChild("SwordImgBtn")
                 local shuriken = path["ShurikenF"]:FindFirstChild("ShurikenImgBtn")
                 local class = path["ClassF"]:FindFirstChild("ClassImgBtn")
                 local realm = path["AscendF"]:FindFirstChild("AscendImgBtn")
 
-                if sword and shortcut.sword.bool then
-                    firesignal(sword.MouseButton1Down)
-                end
-                if shuriken and shortcut.shuriken.bool then
-                    firesignal(shuriken.MouseButton1Down)
-                end
-                if class and shortcut.class.bool then
-                    firesignal(class.MouseButton1Down)
-                end
-                if realm and shortcut.realm.bool then
-                    firesignal(realm.MouseButton1Down)
+                for i,v in next, getgenv().upgrade do
+                    if i == 1 then
+                        if sword and v.bool then
+                            firesignal(sword.MouseButton1Down)
+                        end
+                    end
+                    if i == 2 then
+                        if shuriken and v.bool then
+                            firesignal(shuriken.MouseButton1Down)
+                        end
+                    end
+                    if i == 3 then
+                        if class and v.bool then
+                            firesignal(class.MouseButton1Down)
+                        end
+                    end
+                    if i == 4 then
+                        if realm and v.bool then
+                            firesignal(realm.MouseButton1Down)
+                        end
+                    end
                 end
             end
         end
