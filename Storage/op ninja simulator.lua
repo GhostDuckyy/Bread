@@ -147,21 +147,23 @@ if firesignal then
         while wait(.35) do
             if LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF") then
                 local path = LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF")
+                local shortcut = getgenv().upgrade
+
                 local sword = path["SwordF"]:FindFirstChild("SwordImgBtn")
                 local shuriken = path["ShurikenF"]:FindFirstChild("ShurikenImgBtn")
                 local class = path["ClassF"]:FindFirstChild("ClassImgBtn")
                 local realm = path["AscendF"]:FindFirstChild("AscendImgBtn")
 
-                if sword and getgenv().upgrade.sword.bool then
+                if sword and shortcut.sword.bool then
                     firesignal(sword.MouseButton1Down)
                 end
-                if shuriken and getgenv().upgrade.shuriken.bool then
+                if shuriken and shortcut.shuriken.bool then
                     firesignal(shuriken.MouseButton1Down)
                 end
-                if class and getgenv().upgrade.class.bool then
+                if class and shortcut.class.bool then
                     firesignal(class.MouseButton1Down)
                 end
-                if realm and getgenv().upgrade.realm.bool then
+                if realm and shortcut.realm.bool then
                     firesignal(realm.MouseButton1Down)
                 end
             end
