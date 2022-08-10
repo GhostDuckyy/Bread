@@ -128,6 +128,45 @@ auto:NewButton("Teleport to a safe place","Tween/Teleport to a safe place",funct
     end
 end)
 
+if firesignal then
+    getgenv().upgrade = {
+        sword = {bool = false},
+        shuriken = {bool = false},
+        class = {bool = false},
+        realm = {bool = false},
+    }
+    auto:NewLabel("Auto upgrade")
+    for i,v in pairs(getgenv().upgrade) do
+        auto:NewToggle(tostring(v),string.format("Auto upgrade ",tostring(v)),function(x)
+            v.bool = x;
+        end)
+    end
+    spawn(function()
+        while wait(.35) do
+            if LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF") then
+                local path = LocalPlayer.PlayerGui.MainGui:FindFirstChild("UpgradeF")
+                local sword = path["SwordF"]:FindFirstChild("SwordImgBtn")
+                local shuriken = path["ShurikenF"]:FindFirstChild("ShurikenImgBtn")
+                local class = path["ClassF"]:FindFirstChild("ClassImgBtn")
+                local realm = path["AscendF"]:FindFirstChild("AscendImgBtn")
+
+                if sword and getgenv().upgrade.sword.bool then
+                    firesignal(sword.MouseButton1Down)
+                end
+                if shuriken and getgenv().upgrade.shuriken.bool then
+                    firesignal(shuriken.MouseButton1Down)
+                end
+                if class and getgenv().upgrade.class.bool then
+                    firesignal(class.MouseButton1Down)
+                end
+                if realm and getgenv().upgrade.realm.bool then
+                    firesignal(realm.MouseButton1Down)
+                end
+            end
+        end
+    end)
+end
+
 auto:NewLabel("Hitbox expander")
 auto:NewToggle("Enabled/Disable","none desc",function(x)
     getgenv().Hitbox.Enabled = x;
