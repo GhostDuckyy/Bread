@@ -1,14 +1,16 @@
 local game_list = {
-    -- Blox fruit
+    --// Blox fruit
     ["2753915549 4442272183 4442272183"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Bread_Fruit.lua",
-    -- Godzilla Simulator
+    --// Godzilla Simulator
     ["1257535190"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Godzilla_Sim.lua",
-    -- Rebirth Champions X
+    --// Rebirth Champions X
     ["8540346411"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Rebirth%20Champions%20X.lua",
-    -- Tapping Simulator
+    --// Tapping Simulator
     ["9498006165"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Tapping%20Simulator.lua",
-    -- Op ninja simulator
+    --// Op ninja simulator
     ["4225025295"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/op%20ninja%20simulator.lua",
+    --// Mining Clicker Simulator
+    ["8884334497"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Mining%20Clicker%20Simulator.lua"
 }
 
 for ID, url in next, (game_list) do
