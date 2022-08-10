@@ -75,7 +75,7 @@ local misc = w:NewTab("Misc")
 local auto = main:NewSection("Automation")
 local chr = plrs:NewSection("Character")
 local other_plr = plrs:NewSection("Other players")
-local charm = visual:NewSection("Charms")
+local _visual = visual:NewSection("Visual")
 local other = misc:NewSection("Other")
 local credit = misc:NewSection("Credit")
 
@@ -279,7 +279,7 @@ other_plr:NewToggle("Spectate player","Spectate selected player",function(x)
     end
 end)
 
-charm:NewToggle("Enabled/Disable charms","none desc",function(x)
+_visual:NewToggle("Enabled/Disable charms","none desc",function(x)
     getgenv().Charms.Enabled = x;
     if x then
         for i,v in ipairs(Players:GetPlayers()) do
@@ -291,14 +291,14 @@ charm:NewToggle("Enabled/Disable charms","none desc",function(x)
         end
     end
 end)
-charm:NewToggle("Team colors","Set charms colors to team colors",function(x)
+_visual:NewToggle("Team colors","Set charms colors to team colors",function(x)
     getgenv().Charms.Teamcolor = x;
 end)
 
-charm:NewColorPicker("main colors","Set charms colors to selected colors",getgenv().Charms.color,function(color)
+_visual:NewColorPicker("Main colors","Set charms colors to selected colors",getgenv().Charms.color,function(color)
     getgenv().Charms.color = color;
 end)
-charm:NewColorPicker("outline colors","Set charms outline colors to selected colors",getgenv().Charms.outline,function(color)
+_visual:NewColorPicker("Outline colors","Set charms outline colors to selected colors",getgenv().Charms.outline,function(color)
     getgenv().Charms.outline = color;
 end)
 
@@ -321,8 +321,8 @@ function Players_charms(character)
                     pcall(function()
                         local getTeam = getPlrformChr.Team
                         if getTeam then
-                            local dickColors = getPlrformChr.TeamColor
-                            local TeamColors = dickColors.Color
+                            local _Team = getPlrformChr.TeamColor
+                            local TeamColors = _Team.Color
                             Highlight.FillColor = TeamColors;
                             Highlight.OutlineColor = TeamColors;
                         else
