@@ -311,7 +311,7 @@ other_plr:NewButton("Teleport to player","Tween/Teleport to behind selected play
         local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             local cf = hrp.CFrame * CFrame.new(0,0,-.35)
-            FastTween(LocalPlayer.Character.HumanoidRootPart,{CFrame = cf},{15})
+            FastTween(LocalPlayer.Character.HumanoidRootPart,{CFrame = cf},{20})
         end
     end
 end)
