@@ -45,13 +45,15 @@ getgenv().Charms = {
 
 --// Safe part
 local no_part,yes_part = pcall(function()
----@diagnostic disable-next-line: undefined-global
-    assert(not Safe_part,"Already has safe part")
+    assert(not getgenv().Safe_part,"Already has safe part")
     getgenv().Safe_part = true;
     getgenv().Part = Instance.new("Part",game:GetService("Workspace"))
     getgenv().Part.Anchored = true
-    getgenv().Part.Size = Vector3.new(100,1,100)
-    getgenv().Part.CFrame = CFrame.new(9999,9999,9999)
+    getgenv().Part.Size = Vector3.new(150,1,150)
+
+    local random = math.random(5000,500)
+    local cf = CFrame.new(9999,9999,9999) + CFrame.new(random,random,random)
+    getgenv().Part.CFrame = cf
     getgenv().Part.Material = Enum.Material.ForceField
 
     RunService.RenderStepped:Connect(function()
@@ -130,14 +132,14 @@ end)
 
 if firesignal then
     getgenv().upgrade = {
-        sword = {bool = false},
-        shuriken = {bool = false},
-        class = {bool = false},
-        realm = {bool = false},
+        [1] = {name = "sword",bool = false},
+        [2] = {name = "shuriken",bool = false},
+        [3] = {name = "class",bool = false},
+        [4] = {name = "realm",bool = false},
     }
     auto:NewLabel("Auto upgrade")
     for i,v in pairs(getgenv().upgrade) do
-        auto:NewToggle(tostring(v),string.format("Auto upgrade ",tostring(v)),function(x)
+        auto:NewToggle(tostring(v.name),tostring("Auto upgrade "..v.name),function(x)
             v.bool = x;
         end)
     end
