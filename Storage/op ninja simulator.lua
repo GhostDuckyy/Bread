@@ -121,7 +121,7 @@ auto:NewButton("Teleport to a safe place","Tween/Teleport to a safe place",funct
     if LocalPlayer.Character then
         local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
-            local cf = getgenv().Part.CFrame * CFrame.new(0,1,0)
+            local cf = getgenv().Part.CFrame * CFrame.new(0,3,0)
             hrp.CFrame = cf
             -- FastTween(hrp,{CFrame = cf},{15})
         end
