@@ -45,13 +45,14 @@ getgenv().Charms = {
 
 --// Safe part
 local no_part,yes_part = pcall(function()
-    assert(not getgenv().Safe_part,"Already has safe part")
+    assert(not getgenv().Safe_part)
     getgenv().Safe_part = true;
     getgenv().Part = Instance.new("Part",game:GetService("Workspace"))
     getgenv().Part.Anchored = true
     getgenv().Part.Size = Vector3.new(150,1,150)
-    local cf = CFrame.new(9999,9999,9999)
-    getgenv().Part.CFrame = cf
+    local r = math.random(3500)
+    local cf = Vector3.new(9999,10000,9999) + Vector3.new(r,r,r)
+    getgenv().Part.CFrame = CFrame.new(cf)
     getgenv().Part.Material = Enum.Material.ForceField
 
     RunService.RenderStepped:Connect(function()
