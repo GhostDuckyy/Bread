@@ -445,6 +445,21 @@ other:NewButton("Anti afk","Anti kick you when idled 20 mins",function()
         end
     end
 end)
+
+other:NewToggle("White screen","make performance low when not focus on roblox",function(x)
+    getgenv().Setting.whitescreen = x;
+end)
+game:GetService("UserInputService").WindowFocusReleased:Connect(function()
+    if getgenv().Setting.whitescreen then
+        RunService:Set3dRenderingEnabled(false);
+    end
+end)
+game:GetService("UserInputService").WindowFocused:Connect(function()
+    if getgenv().Setting.whitescreen then
+        RunService:Set3dRenderingEnabled(true);
+    end
+end)
+
 other:NewButton("Remove nametag","Remove nametag form character",function()
     if LocalPlayer.Character then
         local tag = LocalPlayer.Character:FindFirstChild("NameBbGui")
