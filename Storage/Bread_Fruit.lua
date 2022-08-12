@@ -6,10 +6,10 @@ function decode(strs)
 		return tostring(_Pog)
 	else
 		local _Pog = base64_decode or base64.decode or crypt.base64decode or crypt.base64.decode or crypt.base64_decode or nil;
-        if _Pog ~= nil then
-            _Pog = _Pog(code)
+		if _Pog ~= nil then
+		    _Pog = _Pog(code)
 		    return tostring(_Pog);
-        end
+		end
 	end
     return nil;
 end
