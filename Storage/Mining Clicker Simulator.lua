@@ -39,7 +39,10 @@ local HttpService = game:GetService("HttpService")
 local VirtualUser = game:GetService("VirtualUser")
 
 --// remote
-local mine_event = ReplicatedStorage.Remotes:WaitForChild("Click")
+local mine_function = ReplicatedStorage.Remotes:WaitForChild("Click")
+local bonus_function = ReplicatedStorage.Remotes:WaitForChild("Bonus")
+local daily_function = ReplicatedStorage.Remotes:WaitForChild("DailyReward")
+local rebirth_event = ReplicatedStorage.Remotes:WaitForChild("Rebirth")
 
 --// script
 local main = w:CreateTab("Main",true,Icons.Automatic,Vector2.new(0,0), Vector2.new(0,0))
@@ -52,6 +55,8 @@ local other = misc:CreateSection("Others")
 getgenv().Setting = {
     auto_mine = false,
     auto_upgrade = false,
+    auto_Rebirth = false,
+    auto_bonus = false,
 }
 local s = getgenv().Setting
 auto:CreateToggle("Auto mine",false,Color3.new(0.2,.5,1),.25,function(x)
@@ -65,13 +70,49 @@ function automine()
         while wait(.1) do
             if s.auto_mine ~= true then break; end
             local tools = getTools()
-            InvokeServer(mine_event,{})
+            InvokeServer(mine_function,nil)
             if tools ~= nil then
                 tools:Activate()
+            else
+                if LocalPlayer.Backpack:FindFirstChildOfClass("Tool") then LocalPlayer.Character.Humanoid:EquipTool(LocalPlayer.Backpack:FindFirstChildOfClass("Tool")) end
             end
         end
     end)
 end
+
+auto:CreateToggle("Auto rebirth",false,Color3.new(.2,.5,1),.25,function(x)
+    s.auto_Rebirth = x;
+    if x then
+        autorebirth()
+    end
+end)
+function autorebirth()
+    spawn(function()
+        while wait(.5) do
+            if s.auto_Rebirth ~= true then break; end
+            FireServer(rebirth_event,nil)
+        end
+    end)
+end
+
+auto:CreateToggle("Auto bonus",false,Color3.new(.2,.5,1),.25,function(x)
+    s.auto_bonus = x;
+    if x then
+        autobonus()
+    end
+end)
+function autobonus()
+    spawn(function()
+        while wait(.5) do
+            if s.auto_bonus ~= true then break; end
+            InvokeServer(bonus_function,nil)
+        end
+    end)
+end
+
+other:CreateButton("Claim daily",function()
+    InvokeServer(daily_function,{"Coin"})
+end)
 
 other:CreateLabel("UI")
 other:CreateKeybind('Toggle UI', 'RightControl', function()
@@ -97,15 +138,21 @@ function getTools()
 end
 
 function FireServer(remote,...)
-    if remote and type(...) == "table" then
+    if remote and remote:IsA("RemoteEvent") and type(...) == "table" then
         local args = ...
         remote:FireServer(unpack(args))
     end
+    if (...) == nil and remote and remote:IsA("RemoteEvent") then
+        remote:FireServer()
+    end
 end
 function InvokeServer(remote,...)
-    if remote and type(...) == "table" then
+    if remote and remote:IsA("RemoteFunction") and type(...) == "table" then
         local args = ...
         remote:InvokeServer(unpack(args))
+    end
+    if (...) == nil and remote and remote:IsA("RemoteFunction") then
+        remote:InvokeServer()
     end
 end
 
