@@ -59,6 +59,23 @@ local SellDragon_event = ReplicatedStorage.Remotes.SellDragon
 
 --// Script
 local info = w.New({Title = "info"})
+info.Dropdown({Text = "Tp to tycoon",Options = {"WhiteTycoon","PurpleTycoon","GreenTycoon","RedTycoon","PinkTycoon","YellowTycoon","BlackTycoon","BlueTycoon",},Callback = function(x)
+    if workspace:FindFirstChild("Tycoons") and LocalPlayer.Character then
+        local door = nil;
+        local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        for i,v in ipairs(workspace.Tycoons:GetChildren()) do
+            if tostring(v.Name):lower() == tostring(x):lower() then
+                if v:FindFirstChild("TycoonDoor") then
+                    door = v["TycoonDoor"]
+                end
+            end
+        end
+        wait(.1)
+        if door ~= nil and hrp then
+            hrp.CFrame = door.CFrame * CFrame.new(0,1,0)
+        end
+    end
+end})
 local status = info.Button({Text = "Status: wait player claim tycoon",Callback = function() return end})
 info.Button({Text = "Copy discord invite",Callback = function() if setclipboard then local x,y = pcall(function()setclipboard("https://discord.gg/TFUeFEESVv")end) if x then game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Copied discord invite",Icon = "rbxassetid://10599406889",Duration = 5,}) end end end})
 info.Button({Text = "Scripting: Ghost-Ducky#7698"})
@@ -282,7 +299,7 @@ function getNest(str)
     end
     return nil
 end
-
+getgenv().walk = 16;getgenv().jump = 50;
 misc.Button({Text = "Character"})
 local ws = misc.Slider({
     Text = "walk speed",
