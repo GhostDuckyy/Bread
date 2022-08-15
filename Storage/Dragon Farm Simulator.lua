@@ -26,7 +26,6 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local VirtualUser = game:GetService("VirtualUser")
-local PathfindingService = game:GetService("PathfindingService")
 
 --// remote
 function FireServer(remote,...)
@@ -56,13 +55,14 @@ end
 
 local Collect_event = ReplicatedStorage.Remotes.CollectEgg
 local BuyDragon_function = ReplicatedStorage.Remotes.BuyDragon
+local SellDragon_event = ReplicatedStorage.Remotes.SellDragon
 
 --// Script
 local info = w.New({Title = "info"})
 local status = info.Button({Text = "Status: wait player claim tycoon",Callback = function() return end})
-info.Button({Text = "Copy discord invite",function() if setclipboard then local x,y = pcall(function()setclipboard("https://discord.gg/TFUeFEESVv")end) if x then game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Copied discord invite",Icon = "rbxassetid://10599406889",Duration = 5,}) end end end})
-info.Button({Text = "Scripting: Ghost-Ducky#7698"},function() return end)
-info.Button({Text = "UI: Material Lua"},function() return end)
+info.Button({Text = "Copy discord invite",Callback = function() if setclipboard then local x,y = pcall(function()setclipboard("https://discord.gg/TFUeFEESVv")end) if x then game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Copied discord invite",Icon = "rbxassetid://10599406889",Duration = 5,}) end end end})
+info.Button({Text = "Scripting: Ghost-Ducky#7698"})
+info.Button({Text = "UI: Material Lua"})
 
 function getTycoon()
     local Tycoon_function = ReplicatedStorage.Remotes:FindFirstChild("GetPlayerTycoon")
@@ -92,10 +92,13 @@ getgenv().Setting = {
     Sell = false,
     Dragon = nil,
     Buy_dragon = false,
+    Nest = {},
+    select_nest = nil,
 }
 
 local main = w.New({Title = "main"})
--- local misc = w.New({Title = "misc"})
+local sell = w.New({Title = "sell"})
+local misc = w.New({Title = "misc"})
 
 main.Toggle({
     Text = "Auto collect eggs",
@@ -125,7 +128,7 @@ Tycoon["Eggs"].DescendantAdded:Connect(function(child)
 end)
 
 main.Toggle({
-    Text = "Auto sell",
+    Text = "Auto sell eggs",
     Callback = function(x)
         getgenv().Setting.Sell = x;
         if x then
@@ -165,6 +168,153 @@ function Sell_eggs()
     end)
 end
 
+do
+    local Floor1 = Tycoon.Buttons.Dragon:FindFirstChild("Floor1")
+    local Floor2 = Tycoon.Buttons.Dragon:FindFirstChild("Floor2")
+    if Floor1 then
+        for i,v in ipairs(Floor1:GetChildren()) do
+            if v:IsA("Model") and not v:FindFirstChild("Button") then
+                table.insert(getgenv().Setting.Nest,v.Name)
+            end
+            if v:IsA("Model") and v:FindFirstChild("Button") then
+                if table.find(getgenv().Setting.Nest,v.Name) then
+                    table.remove(getgenv().Setting.Nest,table.find(getgenv().Setting.Nest,v.Name))
+                end
+            end
+        end
+    end
+    if Floor2 then
+        for i,v in ipairs(Floor2:GetChildren()) do
+            if v:IsA("Model") and not v:FindFirstChild("Button") then
+                table.insert(getgenv().Setting.Nest,v.Name)
+            end
+            if v:IsA("Model") and v:FindFirstChild("Button") then
+                if table.find(getgenv().Setting.Nest,v.Name) then
+                    table.remove(getgenv().Setting.Nest,table.find(getgenv().Setting.Nest,v.Name))
+                end
+            end
+        end
+    end
+end
+
+local nest_list = sell.Dropdown({
+    Text = "Select nest",
+    Callback = function(x)
+        getgenv().select_nest = x;
+        local z = getNest(getgenv().select_nest)
+        local y = nil;
+        for _,drg in ipairs(z:GetChildren()) do
+            if drg:IsA("Model") and tostring(drg.Name):lower() ~= "nest" then
+                y = tostring(drg.Name)
+            end
+        end
+        local Text;
+        if z and y then
+            Text = tostring("Nest: %s / Dragon: %s"):format(tostring(z.Name),y)
+            getgenv().Nest_info:SetText(Text)
+        end
+    end,
+    Options = getgenv().Setting.Nest,
+})
+sell.Button({Text = "Refresh",Callback = function()
+    nest_list:SetOptions({})
+    do
+        local Floor1 = Tycoon.Buttons.Dragon:FindFirstChild("Floor1")
+        local Floor2 = Tycoon.Buttons.Dragon:FindFirstChild("Floor2")
+        if Floor1 then
+            for i,v in ipairs(Floor1:GetChildren()) do
+                if not table.find(getgenv().Setting.Nest,v.Name) and v:IsA("Model") and not v:FindFirstChild("Button") then
+                    table.insert(getgenv().Setting.Nest,v.Name)
+                end
+                if v:IsA("Model") and v:FindFirstChild("Button") then
+                    if table.find(getgenv().Setting.Nest,v.Name) then
+                        table.remove(getgenv().Setting.Nest,table.find(getgenv().Setting.Nest,v.Name))
+                    end
+                end
+            end
+        end
+        if Floor2 then
+            for i,v in ipairs(Floor2:GetChildren()) do
+                if not table.find(getgenv().Setting.Nest,v.Name) and v:IsA("Model") and not v:FindFirstChild("Button") then
+                    table.insert(getgenv().Setting.Nest,v.Name)
+                end
+                if v:IsA("Model") and v:FindFirstChild("Button") then
+                    if table.find(getgenv().Setting.Nest,v.Name) then
+                        table.remove(getgenv().Setting.Nest,table.find(getgenv().Setting.Nest,v.Name))
+                    end
+                end
+            end
+        end
+    end
+    wait(.2)
+    nest_list:SetOptions(getgenv().Setting.Nest)
+end})
+getgenv().Nest_info = sell.Button({Text = "Nest: nil / Dragon: nil"})
+sell.Button({Text = "Sell dragon", Callback = function()
+    local nest = getNest(getgenv().select_nest)
+    local dragon = nil;
+    if nest then
+        for _,drg in ipairs(nest:GetChildren()) do
+            if drg:IsA("Model") and tostring(drg.Name):lower() ~= "nest" then
+                dragon = tostring(drg.Name)
+            end
+        end
+        FireServer(SellDragon_event,{[1] = nest,[2] = dragon})
+    end
+end})
+function getNest(str)
+    local nest = tostring(str):lower()
+    local Floor1 = Tycoon.Buttons.Dragon:FindFirstChild("Floor1")
+    local Floor2 = Tycoon.Buttons.Dragon:FindFirstChild("Floor2")
+    if Floor1 then
+        for i,v in ipairs(Floor1:GetChildren()) do
+            if tostring(v.Name):lower() == nest then
+                return v
+            end
+        end
+    end
+    if Floor2 then
+        for i,v in ipairs(Floor2:GetChildren()) do
+            if tostring(v.Name):lower() == nest then
+                return v
+            end
+        end
+    end
+    return nil
+end
+
+misc.Button({Text = "Character"})
+local ws = misc.Slider({
+    Text = "walk speed",
+    Min = 16,
+    Max = 500,
+    Def = 16,
+    Callback = function(x)
+        getgenv().walk = x;
+    end
+})
+local jp = misc.Slider({
+    Text = "jump height",
+    Min = 16,
+    Max = 500,
+    Def = 16,
+    Callback = function(x)
+        getgenv().jump = x;
+    end
+})
+RunService.Stepped:Connect(function()
+    if LocalPlayer.Character then
+        local l = tonumber(getgenv().walk)
+        local ll = tonumber(getgenv().jump)
+        local Humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+        if Humanoid then
+            Humanoid.WalkSpeed = l;
+            Humanoid.JumpPower = ll;
+        end
+    end
+end)
+
+--[[
 local Dragon_list = {}
 for _,v in ipairs(ReplicatedStorage.Assets.Dragons:GetChildren()) do
     if v:IsA("Model") then
@@ -174,3 +324,65 @@ for _,v in ipairs(ReplicatedStorage.Assets.Dragons:GetChildren()) do
         end
     end
 end
+wait(.5)
+main.Dropdown({
+    Text = "Select dragon",
+    Options = Dragon_list,
+    Callback = function(x)
+        getgenv().Setting.Dragon = x;
+    end
+})
+main.Toggle({
+    Text = "Auto buy dragon",
+    Callback = function(x)
+        getgenv().Setting.Buy_dragon = x;
+        if x then
+            auto_Buy()
+        end
+    end
+})
+function auto_Buy()
+    spawn(function()
+        while getgenv().Setting.Buy_dragon and task.wait(.5) do
+            local Dragon_Type = getgenv().Setting.Dragon
+            local hrp = LocalPlayer.Character.HumanoidRootPart
+            if Dragon_Type ~= nil and LocalPlayer.Character then
+                if Tycoon:FindFirstChild("Buttons") and Tycoon["Buttons"]:FindFirstChild("Dragon") then
+                    local Floor1 = Tycoon["Buttons"]["Dragon"]:FindFirstChild("Floor1")
+                    local Floor2 = Tycoon["Buttons"]["Dragon"]:FindFirstChild("Floor2")
+                    local Floor3 = Tycoon["Buttons"]["Dragon"]:FindFirstChild("Floor3")
+                    if Floor1 then
+                        for _,btn in ipairs(Floor1:GetDescendants()) do
+                            if btn.Parent and tostring(btn.Name):lower() == tostring("Button"):lower() then
+                                firetouchinterest(hrp, btn, 1)
+                                wait(.2)
+                                firetouchinterest(hrp, btn, 0)
+                                InvokeServer(BuyDragon_function,{btn.Parent.Name, Dragon_Type})
+                            end
+                        end
+                    end
+                    if Floor2 then
+                        for _,btn in ipairs(Floor2:GetDescendants()) do
+                            if btn.Parent and tostring(btn.Name):lower() == tostring("Button"):lower() then
+                                firetouchinterest(hrp, btn, 1)
+                                wait(.2)
+                                firetouchinterest(hrp, btn, 0)
+                                InvokeServer(BuyDragon_function,{btn.Parent.Name, Dragon_Type})
+                            end
+                        end
+                    end
+                    if Floor3 then
+                        for _,btn in ipairs(Floor3:GetDescendants()) do
+                            if btn.Parent and tostring(btn.Name):lower() == tostring("Button"):lower() then
+                                firetouchinterest(hrp, btn, 1)
+                                wait(.2)
+                                firetouchinterest(hrp, btn, 0)
+                                InvokeServer(BuyDragon_function,{btn.Parent.Name, Dragon_Type})
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end]]
