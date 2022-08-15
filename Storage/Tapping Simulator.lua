@@ -75,7 +75,7 @@ getgenv().WS = 16;getgenv().JP = 50;
 plrs:Slider({Text = "Walk speed",Flag = false,Postfix = " value",Default = 16,Minimum = 0,Maximum = 500,Callback = function(x)
     getgenv().WS = tonumber(x);
 end})
-plrs:Slider({Text = "Jump power",Flag = false,Postfix = " value",Default = 50,Minimum = 0,Maximum = 500,Callback = function(x)
+plrs:Slider({Text = "Jump height",Flag = false,Postfix = " value",Default = 50,Minimum = 0,Maximum = 500,Callback = function(x)
     getgenv().JP = tonumber(x);
 end})
 RunService.Stepped:Connect(function()
@@ -323,6 +323,7 @@ local Teleport_List = {
     [15] = {Name = "Blue Magma island",pos = CFrame.new(1401.12939453125, 5230.490234375, -2953.919677734375)},
     [16] = {Name = "Purple Magma island",pos = CFrame.new(1319.7027587890625, 7651.8984375, -2958.0576171875)},
     [17] = {Name = "Yellow Magma island", pos = CFrame.new(1403.5440673828125, 10391.9912109375, -2903.138427734375)},
+    [18] = {Name = "Red Magma island",pos = CFrame.new(1426.2127685546875, 13344.337890625, -2900.90087890625)}
 }
 
 for i,v in ipairs(Teleport_List) do
@@ -337,7 +338,7 @@ end
 
 misc:Button({Text = "Unlock all portals",Callback = function()
     if Self_data then
-        local list = {"Mine","Coral","Beach","Forest","Magma","Swamp","Snow","Desert","Death","Flower","Darkheart","Dominus","Cloud","Molten","Blue Magma","Purple Magma","Yellow Magma"}
+        local list = {"Mine","Coral","Beach","Forest","Magma","Swamp","Snow","Desert","Death","Flower","Darkheart","Dominus","Cloud","Molten","Blue Magma","Purple Magma","Yellow Magma","Red Magma"}
         local portals_Table = nil;
         for i,v in next, (Self_data) do
             if tostring(i):lower() == tostring("unlockedPortals"):lower() then
@@ -357,17 +358,6 @@ misc:Button({Text = "Unlock all portals",Callback = function()
         end
     else
         Self_data = getData(LocalPlayer)
-    end
-end})
-
-misc:Button({Text = "Inf world boost (visual)",Callback = function()
-    for i,v in next, getgc(false) do
-        if type(v) == "function" and not isexecutorclosure(v) then
-            if tostring(debug.getinfo(v).name):lower() == tostring("updateZoneMultiplier"):lower() then
-                wait(.5)
-                v("Hacked by Bread","Imagine if real",math.huge)
-            end
-        end
     end
 end})
 
