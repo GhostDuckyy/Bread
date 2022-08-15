@@ -11,6 +11,10 @@ local game_list = {
     ["4225025295"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/op%20ninja%20simulator.lua",
     --// Mining Clicker Simulator
     ["8884334497"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Mining%20Clicker%20Simulator.lua",
+    --// Dragon Farm Simulator
+    ["9983979661"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Dragon%20Farm%20Simulator.lua"
+
+
 }
 
 for ID, url in next, (game_list) do
