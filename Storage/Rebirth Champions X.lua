@@ -102,7 +102,7 @@ function Auto_click()
     end)
 end
 
-main:AddButton({text = "Best world boost",callback = function()
+main:AddButton({text = "Get latest world boost",callback = function()
     local World_Boost = game:GetService("ReplicatedStorage").Events:FindFirstChild("WorldBoost")
     local Stored_World_Boost = game:GetService("ReplicatedStorage").Events:FindFirstChild("StoreWorldBoost")
     local Latest_world = "Shadow"
