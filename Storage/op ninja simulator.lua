@@ -324,11 +324,12 @@ other_plr:NewButton("Refresh List","Refresh the players list",function()
 end)
 other_plr:NewButton("Teleport to player","Tween/Teleport to behind selected player",function()
     local plr = get_plr(Target_plr)
-    if plr ~= nil and plr.Character then
+    if plr ~= nil and plr.Character and LocalPlayer.Character then
         local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            local cf = hrp.CFrame * CFrame.new(0,0,-.35)
-            FastTween(LocalPlayer.Character.HumanoidRootPart,{CFrame = cf},{20})
+        if hrp and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local cf = hrp.CFrame * CFrame.new(0,.1,-.35)
+            -- FastTween(LocalPlayer.Character.HumanoidRootPart,{CFrame = cf},{20})
+            LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = cf
         end
     end
 end)
@@ -453,11 +454,15 @@ end)
 game:GetService("UserInputService").WindowFocusReleased:Connect(function()
     if getgenv().Setting.whitescreen then
         RunService:Set3dRenderingEnabled(false);
+        if setfpscap then
+            setfpscap(6)
+        end
     end
 end)
 game:GetService("UserInputService").WindowFocused:Connect(function()
-    if getgenv().Setting.whitescreen then
-        RunService:Set3dRenderingEnabled(true);
+    RunService:Set3dRenderingEnabled(true);
+    if setfpscap then
+        setfpscap(60)
     end
 end)
 
