@@ -302,7 +302,7 @@ function getNest(str)
     return nil
 end
 
-misc.Button({Text = "No E wait",Callback = function()
+misc.Button({Text = "no E wait",Callback = function()
     for i,v in next, workspace:GetDescendants() do
         if v:IsA("ProximityPrompt") then
             local HoldDuration = v.HoldDuration
