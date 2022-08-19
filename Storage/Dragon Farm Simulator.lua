@@ -59,7 +59,7 @@ local SellDragon_event = ReplicatedStorage.Remotes.SellDragon
 
 --// Script
 local info = w.New({Title = "info"})
-info.Dropdown({Text = "Tp to tycoon",Options = {"WhiteTycoon","PurpleTycoon","GreenTycoon","RedTycoon","PinkTycoon","YellowTycoon","BlackTycoon","BlueTycoon",},Callback = function(x)
+info.Dropdown({Text = "Teleport to tycoon",Options = {"WhiteTycoon","PurpleTycoon","GreenTycoon","RedTycoon","PinkTycoon","YellowTycoon","BlackTycoon","BlueTycoon",},Callback = function(x)
     if workspace:FindFirstChild("Tycoons") and LocalPlayer.Character then
         local door = nil;
         local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -133,7 +133,7 @@ main.Toggle({
             end)
         end
     end,
-    Enabled = false
+    Enabled = false,
 })
 Tycoon["Eggs"].DescendantAdded:Connect(function(child)
     if getgenv().Setting.Collect then
@@ -174,7 +174,7 @@ function Sell_eggs()
                     local ProximityPrompt = Sell_Btn:FindFirstChild("ProximityPrompt")
                     local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                     if Sell_Btn and ProximityPrompt and hrp then
-                        if ProximityPrompt.HoldDuration ~= .1 then ProximityPrompt.HoldDuration = .1 end
+                        if ProximityPrompt.HoldDuration ~= .01 then ProximityPrompt.HoldDuration = .01 end
                         local cf = Sell_Btn.CFrame * CFrame.new(0,1.3,-3)
                         hrp.CFrame = cf
                         fireproximityprompt(ProximityPrompt)
@@ -222,12 +222,12 @@ local nest_list = sell.Dropdown({
         local y = nil;
         for _,drg in ipairs(z:GetChildren()) do
             if drg:IsA("Model") and tostring(drg.Name):lower() ~= "nest" then
-                y = tostring(drg.Name)
+                y = drg.Name
             end
         end
         local Text;
-        if z and y then
-            Text = tostring("Nest: %s / Dragon: %s"):format(tostring(z.Name),y)
+        if z and y and z.Parent then
+            Text = tostring("Info: %s | %s | %s"):format(tostring(z.Parent.Name),tostring(z.Name),tostring(y))
             getgenv().Nest_info:SetText(Text)
         end
     end,
@@ -266,7 +266,9 @@ sell.Button({Text = "Refresh",Callback = function()
     wait(.2)
     nest_list:SetOptions(getgenv().Setting.Nest)
 end})
-getgenv().Nest_info = sell.Button({Text = "Nest: nil / Dragon: nil"})
+getgenv().Nest_info = sell.Button({Text = "Info: nil",Callback = function()
+    print(tostring(getgenv().Nest_info:GetText()))
+end})
 sell.Button({Text = "Sell dragon", Callback = function()
     local nest = getNest(getgenv().select_nest)
     local dragon = nil;
@@ -299,6 +301,22 @@ function getNest(str)
     end
     return nil
 end
+
+misc.Button({Text = "No E wait",Callback = function()
+    for i,v in next, workspace:GetDescendants() do
+        if v:IsA("ProximityPrompt") then
+            local HoldDuration = v.HoldDuration
+            HoldDuration = .01
+        end
+    end
+end,Menu = {
+    Infomation = function(self)
+        w.Banner({
+            Text = "Instant E"
+        })
+    end,},
+})
+
 getgenv().walk = 16;getgenv().jump = 50;
 misc.Button({Text = "Character"})
 local ws = misc.Slider({
