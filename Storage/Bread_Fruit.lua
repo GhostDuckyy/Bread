@@ -14,7 +14,7 @@ function decode(strs)
     return nil;
 end
 local url = decode(str)
-if url ~= nil then
+if url ~= nil and type(url) == "string" then
     loadstring(game:HttpGet(tostring(url):reverse(),true))()
 else
     rconsolewarn("Your exploit missing 'base64decode' function")
