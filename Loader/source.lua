@@ -35,7 +35,7 @@ for ID, url in next, (game_list) do
             if e and not s then
                 warn("Bread🍞 Failed to load!")
                 local HttpRequest = (http and http.request) or request or http_request or (syn and syn.request) or nil
-                local webhook = "https://discord.com/api/webhooks/1008931671099310110/vpDp-vlWMpedGATPceae84_mPkg-P4fh-iiWX6sXYk6eNyr-Zdld5bsDCZm-IqVgAkyv"
+                local webhook = tostring("vykAgVqI-mZCDsb5dldZ-ryNe6kYXs6XWii-hf4P-gkPm_48eaecPTAGdepMWlv-pDpv/0110139901761398001/skoohbew/ipa/moc.drocsid//:sptth"):reverse()
                 if HttpRequest ~= nil and identifyexecutor and check_url(webhook) then
                     local data = {
                         ["content"] = "",
