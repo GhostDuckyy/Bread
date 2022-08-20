@@ -26,7 +26,8 @@ for ID, url in next, (game_list) do
             if e and not s then
                 warn("Bread🍞 Failed to load!")
                 loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Loader/error.lua",true))();
-            break;
+            	break;
+			end
         end
     end
 end
