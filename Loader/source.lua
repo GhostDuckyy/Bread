@@ -13,7 +13,8 @@ local game_list = {
     ["8884334497"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Mining%20Clicker%20Simulator.lua",
     --// Dragon Farm Simulator
     ["9983979661"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Dragon%20Farm%20Simulator.lua",
-
+    --// Wheat Farming Simulator
+    ["10106105124"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Wheat%20Farming%20Simulator.lua",
 }
 
 for ID, url in next, (game_list) do
@@ -23,7 +24,7 @@ for ID, url in next, (game_list) do
             if s then
                 warn("Bread🍞 Success to load!")
             end
-            if e and not s then
+            if e then
                 warn("Bread🍞 Failed to load!")
                 loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Loader/error.lua",true))();
             	break;
