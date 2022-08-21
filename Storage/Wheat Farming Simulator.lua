@@ -157,12 +157,11 @@ function auto_Sell()
 end
 
 getgenv().WS = 16;getgenv().JP = 50;
-auto:Cheat("Label","Client")
-auto:Cheat("Slider","Walk speed",function(val)
+misc:Cheat("Slider","Walk speed",function(val)
     getgenv().WS = val;
 end,{min = 16,max = 500,suffix = " value"})
 
-auto:Cheat("Slider","Jump height",function(val)
+misc:Cheat("Slider","Jump height",function(val)
     getgenv().JP = val;
 end,{min = 50,max = 500,suffix = " value"})
 RunService.Stepped:Connect(function()
