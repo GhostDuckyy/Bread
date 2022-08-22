@@ -55,15 +55,18 @@ getgenv().Setting = {
     Hitbox = {
         Transparency = false,
         Size = Vector3.new(4.75, 5, 4.75)
+    },
+    Pet = {
+        Selected = nil;
     }
 }
 
 local tab_1 = w:Category("Main")
 
 local auto = tab_1:Sector("Automatic")
+local pet = tab_1:Sector("Pet")
 local misc = tab_1:Sector("Misc")
 local credit = tab_1:Sector("Credit")
-
 
 auto:Cheat("Checkbox","AI farm",function(x)
     getgenv().Setting.auto_Farm.Enabled = x;
@@ -73,7 +76,7 @@ auto:Cheat("Checkbox","AI farm",function(x)
 end)
 auto:Cheat("Slider","Range",function(x)
     getgenv().Setting.auto_Farm.Range = x;
-end,{min = 150,max = 1000,suffix = " range"})
+end,{min = 500,max = 1000,suffix = " range"})
 function auto_Farm()
     spawn(function()
         local wheat = nil;
@@ -155,6 +158,73 @@ function auto_Sell()
         end
     end)
 end
+
+local pet_List = {};
+for i,v in next, (game:GetService("ReplicatedStorage")["Pets"]:GetChildren()) do
+    local name = tostring(v.Name)
+    if not table.find(pet_List,name) then
+        table.insert(pet_List,name)
+    end
+end
+
+function get_Allpets()
+    local list = {};
+    table.clear(list);
+    -- task.wait(.1)
+    for i,v in ipairs(workspace:GetChildren()) do
+        local name = tostring(v.Name)
+
+        if not name:lower():find("wheat") and v:IsA("Model") then
+            for _,p in next, (pet_List) do
+                if name:lower() == tostring(p):lower() then
+                    table.insert(list,v)
+                end
+            end
+        end
+    end
+    return list
+end
+
+local pet_dropdown = pet:Cheat("Dropdown","Available pet in workspace",function(x)
+    getgenv().Setting.Pet.Selected = x;
+end,{options = {"None"};})
+pet:Cheat("Button","Refresh dropdown",function()
+    local t_1 = pet_dropdown:GetOption()
+    local t_2 = get_Allpets()
+    for i,v in next, (t_1) do
+        if v ~= "None" then
+            pet_dropdown:RemoveOption(v)
+        end
+    end
+    task.wait(.5)
+    for i,v in next, (t_2) do
+        pet_dropdown:AddOption(v.Name)
+    end
+end)
+pet:Cheat("Button","Teleport",function()
+    if getgenv().Setting.Pet.Selected ~= nil and getgenv().Setting.Pet.Selected ~= "None" and typeof(getgenv().Setting.Pet.Selected) == "string" then
+        local Selected = getgenv().Setting.Pet.Selected
+        local t = get_Allpets()
+        local pet_ = nil;
+        for i,v in ipairs(workspace:GetChildren()) do
+            if not tostring(v.Name):lower():find("wheat") and v:IsA("Model") and tostring(v.Name):lower() == tostring(Selected):lower() then
+                pet_ = v;
+            end
+        end
+        if pet_ ~= nil then
+            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local pet_hrp = pet_:FindFirstChild("HumanoidRootPart")
+            if hrp and pet then
+                local cf = pet_hrp.CFrame * CFrame.new(0,3.5,0)
+                FastTween(hrp, {CFrame = cf},{10})
+            end
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = string.format("%s is Nil in workspace",Selected),Duration = 5})
+            game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Refresh dropdown!",Duration = 5})
+        end
+    end
+end)
+
 
 getgenv().WS = 16;getgenv().JP = 50;
 misc:Cheat("Slider","Walk speed",function(val)
