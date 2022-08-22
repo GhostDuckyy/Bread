@@ -8,7 +8,10 @@ end
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
-local CurrentCamera = workspace.CurrentCamera
+local CurrentCamera = game:GetService("Workspace").CurrentCamera
+function WorldToViewportPoint(v)
+    return CurrentCamera:WorldToViewportPoint(v.Position)
+end
 
 local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
@@ -58,6 +61,8 @@ getgenv().Setting = {
     },
     Pet = {
         Selected = nil;
+        name = false,
+        name_color = Color3.new(1,1,1)
     }
 }
 
@@ -159,12 +164,85 @@ function auto_Sell()
     end)
 end
 
-local pet_List = {};
+local pets_List = {};
 for i,v in next, (game:GetService("ReplicatedStorage")["Pets"]:GetChildren()) do
     local name = tostring(v.Name)
-    if not table.find(pet_List,name) then
-        table.insert(pet_List,name)
+    if not table.find(pets_List,name) then
+        table.insert(pets_List,name)
     end
+end
+
+pet:Cheat("Checkbox","Show name",function(x)
+    getgenv().Setting.Pet.name = x;
+end)
+
+pet:Cheat("color","name color", function(x)
+    getgenv().Setting.Pet.name_color = x;
+end)
+
+function Drawing_name(model)
+    if model:FindFirstChild("HumanoidRootPart") then
+        local label = Drawing.new("Text")
+        label.Text = tostring(model.Name)
+        label.Font = Drawing.Fonts["UI"]
+        label.Size = 18
+        label.Center = true
+
+        label.Visible = false
+
+        label.Color = getgenv().Setting.Pet.name_color
+        label.Outline = true
+        label.OutlineColor = Color3.new(0,0,0)
+
+
+        local RS = RunService.RenderStepped:Connect(function()
+            local root = model:FindFirstChild("HumanoidRootPart")
+            if model ~= nil and root then
+                local root_vector,onScreen = WorldToViewportPoint(root)
+
+                if onScreen then
+                    label.Position = Vector2.new(root_vector.X, root_vector.Y - 10)
+                    label.Size = 1000 / root_vector.Z + 8
+                    label.Text = tostring(model.Name)
+                    label.Color = getgenv().Setting.Pet.name_color
+
+                    if getgenv().Setting.Pet.name then
+                        label.Visible = true
+                    else
+                        label.Visible = false
+                    end
+                else
+                    label.Visible = false
+                end
+            else
+                label.Visible = false
+            end
+        end)
+
+        model.Destroying:Connect(function()
+            RS:Disconnect()
+            task.wait(.1)
+            label:Remove()
+        end)
+    end
+end
+
+do
+    for i,v in ipairs(workspace:GetChildren()) do
+        if not tostring(v.Name):lower():find("wheat") and v:IsA("Model") then
+            if table.find(pets_List,tostring(v.Name)) then
+                Drawing_name(v)
+            end
+        end
+    end
+    workspace.ChildAdded:Connect(function(v)
+        task.wait(1)
+        if not tostring(v.Name):lower():find("wheat") and v:IsA("Model") then
+            if table.find(pets_List,tostring(v.Name)) then
+                Drawing_name(v)
+            end
+        end
+    end)
 end
 
 function get_Allpets()
@@ -175,17 +253,15 @@ function get_Allpets()
         local name = tostring(v.Name)
 
         if not name:lower():find("wheat") and v:IsA("Model") then
-            for _,p in next, (pet_List) do
-                if name:lower() == tostring(p):lower() then
-                    table.insert(list,v)
-                end
+            if table.find(pets_List,name) then
+                table.insert(list,v)
             end
         end
     end
     return list
 end
 
-local pet_dropdown = pet:Cheat("Dropdown","Available pet in workspace",function(x)
+local pet_dropdown = pet:Cheat("Dropdown","Available pets in workspace",function(x)
     getgenv().Setting.Pet.Selected = x;
 end,{options = {"None"};})
 pet:Cheat("Button","Refresh dropdown",function()
@@ -219,7 +295,7 @@ pet:Cheat("Button","Teleport",function()
                 FastTween(hrp, {CFrame = cf},{10})
             end
         else
-            game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = string.format("%s is Nil in workspace",Selected),Duration = 5})
+            game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = string.format("%s is nil in workspace",Selected),Duration = 5})
             game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Refresh dropdown!",Duration = 5})
         end
     end
