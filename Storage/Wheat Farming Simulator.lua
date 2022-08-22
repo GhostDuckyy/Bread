@@ -176,7 +176,7 @@ pet:Cheat("Checkbox","Show name",function(x)
     getgenv().Setting.Pet.name = x;
 end)
 
-pet:Cheat("color","name color", function(x)
+pet:Cheat("color","Pick name color", function(x)
     getgenv().Setting.Pet.name_color = x;
 end)
 
