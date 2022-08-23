@@ -62,7 +62,8 @@ getgenv().Setting = {
     Pet = {
         Selected = nil;
         name = false,
-        name_color = Color3.new(1,1,1)
+        name_color = Color3.new(1,1,1),
+
     }
 }
 
@@ -292,7 +293,7 @@ pet:Cheat("Button","Teleport",function()
             local pet_hrp = pet_:FindFirstChild("HumanoidRootPart")
             if hrp and pet then
                 local cf = pet_hrp.CFrame * CFrame.new(0,3.5,0)
-                FastTween(hrp, {CFrame = cf},{10})
+                hrp.CFrame = cf
             end
         else
             game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = string.format("%s is nil in workspace",Selected),Duration = 5})
