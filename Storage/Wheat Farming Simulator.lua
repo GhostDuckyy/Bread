@@ -54,14 +54,11 @@ local rebirth_function = game:GetService("ReplicatedStorage").RemoteFunctions.Re
 
 --// Setting
 getgenv().Setting = {
-    auto_Farm = {Enabled = false,Range = 500},
+    auto_Farm = {Enabled = false,Range = 800},
     auto_Sell = false,
     rebirth = false,
     mega_rebirth = false,
-    Hitbox = {
-        Transparency = false,
-        Size = Vector3.new(4.75, 5, 4.75)
-    },
+    harvest_aura = false,
     Pet = {
         Selected = nil;
         name = false,
@@ -77,15 +74,44 @@ local pet = tab_1:Sector("Pet")
 local misc = tab_1:Sector("Misc")
 local credit = tab_1:Sector("Credit")
 
+auto:Cheat("Checkbox","Harvest aura",function(x)
+    getgenv().Setting.harvest_aura = x;
+    if x then
+        harvest_aura()
+    end
+end)
+function harvest_aura()
+    spawn(function()
+        while getgenv().Setting.harvest_aura and task.wait(5) do
+            if LocalPlayer.Character then
+                for i,v in ipairs(workspace:GetChildren()) do
+                    if tostring(v.Name):lower():find("wheat") then
+                        local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                        local Hitbox = v:FindFirstChild("Hitbox")
+                        local Vector3Value = v:FindFirstChildOfClass("Vector3Value")
+
+                        if Hitbox and Vector3Value and hrp then
+                            local mag = (hrp.Position - Hitbox.Position).Magnitude
+                            if mag < 100 or mag <= 100 then
+                                local arg = {
+                                    [1] = workspace[tostring(v.Name)][tostring(Vector3Value.Name)]
+                                }
+                                FireServer(harvest_event, arg)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
 auto:Cheat("Checkbox","AI farm",function(x)
     getgenv().Setting.auto_Farm.Enabled = x;
     if x then
         auto_Farm()
     end
 end)
-auto:Cheat("Slider","Range",function(x)
-    getgenv().Setting.auto_Farm.Range = x;
-end,{min = 500,max = 1000,suffix = " range"})
 function auto_Farm()
     spawn(function()
         local wheat = nil;
@@ -115,7 +141,7 @@ function auto_Farm()
     end)
 end
 function getWheat(distance)
-    local value = distance or 500;
+    local value = distance or 800;
     if value then
         value = tonumber(distance)
         for i,v in next, (workspace:GetChildren()) do
