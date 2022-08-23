@@ -1,6 +1,6 @@
 local game_list = {
     --// Blox fruit
-    ["2753915549 4442272183 4442272183"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Bread_Fruit.lua",
+    ["2753915549 4442272183 4442272183"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Blox%20Fruit.lua",
     --// Godzilla Simulator
     ["1257535190"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Godzilla_Sim.lua",
     --// Rebirth Champions X
