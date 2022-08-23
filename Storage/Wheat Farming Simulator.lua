@@ -50,11 +50,14 @@ end
 
 local redeem_function = game:GetService("ReplicatedStorage").RemoteFunctions.Redeem
 local harvest_event = game:GetService("ReplicatedStorage").RemoteEvents.Harvest
+local rebirth_function = game:GetService("ReplicatedStorage").RemoteFunctions.Rebirth
 
 --// Setting
 getgenv().Setting = {
     auto_Farm = {Enabled = false,Range = 500},
     auto_Sell = false,
+    rebirth = false,
+    mega_rebirth = false,
     Hitbox = {
         Transparency = false,
         Size = Vector3.new(4.75, 5, 4.75)
@@ -112,24 +115,18 @@ function auto_Farm()
     end)
 end
 function getWheat(distance)
-    local value = distance or nil;
-    if value ~= nil then
+    local value = distance or 500;
+    if value then
         value = tonumber(distance)
         for i,v in next, (workspace:GetChildren()) do
             if v:IsA("Model") and v:FindFirstChildOfClass("Vector3Value") and tostring(v.Name):lower():find("wheat") then
                 local part = v:FindFirstChild("Hitbox")
                 if part then
-                    local mag = (LocalPlayer.Character.HumanoidRootPart.CFrame.Position - part.CFrame.Position).Magnitude
+                    local mag = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
                     if value > mag then
                         return v;
                     end
                 end
-            end
-        end
-    else
-        for i,v in next, (workspace:GetChildren()) do
-            if v:IsA("Model") and v:FindFirstChildOfClass("Vector3Value") and tostring(v.Name):lower():find("wheat") then
-                return v;
             end
         end
     end
@@ -161,6 +158,34 @@ function auto_Sell()
                     end
                 end
             end
+        end
+    end)
+end
+
+auto:Cheat("Checkbox","Auto Rebirth",function(x)
+    getgenv().Setting.rebirth = x;
+    if x then
+        rebirth()
+    end
+end)
+function rebirth()
+    spawn(function()
+        while getgenv().Setting.rebirth and task.wait(.1) do
+            InvokeServer(rebirth_function,{})
+        end
+    end)
+end
+
+auto:Cheat("Checkbox","Auto Mega rebirth",function(x)
+    getgenv().Setting.mega_rebirth = x;
+    if x then
+        mega_rebirth()
+    end
+end)
+function mega_rebirth()
+    spawn(function()
+        while getgenv().Setting.mega_rebirth and task.wait(.1) do
+            InvokeServer(rebirth_function,{[1] = true})
         end
     end)
 end
