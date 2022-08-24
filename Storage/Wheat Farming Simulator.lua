@@ -358,7 +358,7 @@ end
 local pet_dropdown = pet:Cheat("Dropdown","Available pets in workspace",function(x)
     getgenv().Setting.Pet.Selected = x;
 end,{options = {"None"};})
-pet:Cheat("Button","Refresh dropdown",function()
+pet:Cheat("Button","Pets dropdown",function()
     local t_1 = pet_dropdown:GetOption()
     local t_2 = get_Allpets()
     for i,v in next, (t_1) do
@@ -370,8 +370,8 @@ pet:Cheat("Button","Refresh dropdown",function()
     for i,v in next, (t_2) do
         pet_dropdown:AddOption(v.Name)
     end
-end)
-pet:Cheat("Button","Teleport",function()
+end,{text = "Refresh"})
+pet:Cheat("Button","Goto pets",function()
     if getgenv().Setting.Pet.Selected ~= nil and getgenv().Setting.Pet.Selected ~= "None" and typeof(getgenv().Setting.Pet.Selected) == "string" then
         local Selected = getgenv().Setting.Pet.Selected
         local t = get_Allpets()
@@ -393,7 +393,7 @@ pet:Cheat("Button","Teleport",function()
             game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Refresh dropdown!",Duration = 5})
         end
     end
-end)
+end,{text = "Teleport"})
 
 
 getgenv().WS = 16;getgenv().JP = 50;
@@ -419,7 +419,7 @@ end)
 
 misc:Cheat("Button","Redeem all code",function()
     redeemCode()
-end)
+end,{text = "Redeem"})
 function redeemCode()
     local code_list = {
         "PETS",
@@ -436,17 +436,17 @@ end
 
 credit:Cheat("Label","Scripting: Ghost-Ducky#7698")
 credit:Cheat("Label", "Ui: Project Finity")
-credit:Cheat("Button","Copy discord invite",function()
+credit:Cheat("Button","Discord invite",function()
     if setclipboard then
         local x,y = pcall(function()setclipboard("https://discord.gg/TFUeFEESVv")end)
         if x then game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Success copyied discord invite",Duration = 5}) end
     end
-end)
+end,{text = "Copy"})
 credit:Cheat("Button","Destroy GUI",function()
     if game:GetService("CoreGui"):FindFirstChild("FinityUI") then
         game:GetService("CoreGui"):FindFirstChild("FinityUI"):Destroy()
     end
-end)
+end,{text = "Destroy"})
 
 --// Fast Tween
 function FastTween(instance, property, tweenInfo, delayTime)
