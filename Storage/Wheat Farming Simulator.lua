@@ -95,7 +95,7 @@ function getNearest()
 
                 if hitbox and value and hrp then
                     local mag = (hrp.Position - hitbox.Position).Magnitude
-                    if mag < 100 or mag <= 100 then
+                    if mag < 110 or mag <= 110 then
                         local Duckyy = {
                             [1] = workspace[tostring(v.Name)][tostring(value.Name)]
                         }
