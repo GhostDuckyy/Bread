@@ -82,10 +82,10 @@ auto:Cheat("Checkbox","Harvest aura",function(x)
 end)
 function harvest_aura()
     spawn(function()
-        while getgenv().Setting.harvest_aura and task.wait(5) do
+        while getgenv().Setting.harvest_aura and task.wait(3.5) do
             if LocalPlayer.Character then
                 for i,v in ipairs(workspace:GetChildren()) do
-                    if tostring(v.Name):lower():find("wheat") then
+                    if tostring(v.Name):lower():find("wheat") and v:IsA("Model") then
                         local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                         local Hitbox = v:FindFirstChild("Hitbox")
                         local Vector3Value = v:FindFirstChildOfClass("Vector3Value")
@@ -96,7 +96,7 @@ function harvest_aura()
                                 local arg = {
                                     [1] = workspace[tostring(v.Name)][tostring(Vector3Value.Name)]
                                 }
-                                FireServer(harvest_event, arg)
+                                harvest_event:FireServer(arg)
                             end
                         end
                     end
