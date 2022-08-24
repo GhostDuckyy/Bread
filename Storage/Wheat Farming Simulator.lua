@@ -54,11 +54,11 @@ local rebirth_function = game:GetService("ReplicatedStorage").RemoteFunctions.Re
 
 --// Setting
 getgenv().Setting = {
-    auto_Farm = {Enabled = false,Range = 800},
+    auto_Farm = {Enabled = false,Range = 1000},
     auto_Sell = false,
     rebirth = false,
     mega_rebirth = false,
-    harvest_aura = false,
+    harvest_aura = {Enabled = false,slow_mode = false},
     Pet = {
         Selected = nil;
         name = false,
@@ -74,33 +74,75 @@ local pet = tab_1:Sector("Pet")
 local misc = tab_1:Sector("Misc")
 local credit = tab_1:Sector("Credit")
 
+auto:Cheat("Checkbox","Slow harvest",function(x)
+    getgenv().Setting.harvest_aura.slow_mode = x;
+end)
 auto:Cheat("Checkbox","Harvest aura",function(x)
-    getgenv().Setting.harvest_aura = x;
+    getgenv().Setting.harvest_aura.Enabled = x;
     if x then
         harvest_aura()
     end
 end)
+
+function getNearest()
+    local wheat = {}
+    if LocalPlayer.Character then
+        for i,v in ipairs(workspace:GetChildren()) do
+            if v:IsA("Model") and tostring(v.Name):lower():find("wheat") then
+                local hitbox = v:FindFirstChild("Hitbox")
+                local value = v:FindFirstChildOfClass("Vector3Value")
+                local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+                if hitbox and value and hrp then
+                    local mag = (hrp.Position - hitbox.Position).Magnitude
+                    if mag < 100 or mag <= 100 then
+                        local Duckyy = {
+                            [1] = workspace[tostring(v.Name)][tostring(value.Name)]
+                        }
+                        table.insert(wheat,Duckyy)
+                    end
+                end
+            end
+        end
+        return wheat
+    else
+        return nil;
+    end
+    return nil
+end
 function harvest_aura()
     spawn(function()
-        while getgenv().Setting.harvest_aura and task.wait(3.5) do
-            if LocalPlayer.Character then
-                for i,v in ipairs(workspace:GetChildren()) do
-                    if tostring(v.Name):lower():find("wheat") and v:IsA("Model") then
-                        local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                        local Hitbox = v:FindFirstChild("Hitbox")
-                        local Vector3Value = v:FindFirstChildOfClass("Vector3Value")
+        while getgenv().Setting.harvest_aura.Enabled and task.wait() do
+            if not getgenv().Setting.harvest_aura.slow_mode  then
+                if LocalPlayer.Character then
+                    for i,v in ipairs(workspace:GetChildren()) do
+                        if v:IsA("Model") and tostring(v.Name):lower():find("wheat") then
+                            local hitbox = v:FindFirstChild("Hitbox")
+                            local value = v:FindFirstChildOfClass("Vector3Value")
+                            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-                        if Hitbox and Vector3Value and hrp then
-                            local mag = (hrp.Position - Hitbox.Position).Magnitude
-                            if mag < 100 or mag <= 100 then
-                                local arg = {
-                                    [1] = workspace[tostring(v.Name)][tostring(Vector3Value.Name)]
-                                }
-                                harvest_event:FireServer(arg)
+                            if hitbox and value and hrp then
+                                local mag = (hrp.Position - hitbox.Position).Magnitude
+                                if mag < 100 or mag <= 100 then
+                                    local Duckyy = {
+                                        [1] = workspace[tostring(v.Name)][tostring(value.Name)]
+                                    }
+                                    harvest_event:FireServer(Duckyy)
+                                end
                             end
                         end
                     end
                 end
+                task.wait(3)
+            else
+                local wheat = getNearest()
+                if wheat ~= nil then
+                    for i,v in next, (wheat) do
+                        harvest_event:FireServer(v)
+                        task.wait()
+                    end
+                end
+                task.wait(3)
             end
         end
     end)
@@ -134,13 +176,13 @@ function auto_Farm()
                         end
                     end
                 else
-                    wheat = getWheat(range)
+                    wheat = getRandom(range)
                 end
             end
         end
     end)
 end
-function getWheat(distance)
+function getRandom(distance)
     local value = distance or 800;
     if value then
         value = tonumber(distance)
