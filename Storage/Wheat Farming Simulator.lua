@@ -191,7 +191,7 @@ function getRandom(distance)
                 local part = v:FindFirstChild("Hitbox")
                 if part then
                     local mag = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
-                    if value > mag then
+                    if value > mag and mag > 100 then
                         return v;
                     end
                 end
