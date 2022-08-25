@@ -148,7 +148,7 @@ function harvest_aura()
     end)
 end
 
-auto:Cheat("Checkbox","AI farm",function(x)
+auto:Cheat("Checkbox","Tween farm",function(x)
     getgenv().Setting.auto_Farm.Enabled = x;
     if x then
         auto_Farm()
