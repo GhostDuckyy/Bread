@@ -434,6 +434,16 @@ function redeemCode()
     end
 end
 
+misc:Cheat("Bind","Toggle UI",function(x)
+    w.ChangeToggleKey(x)
+    print(tostring(x))
+end,{bind = Enum.KeyCode.RightControl})
+misc:Cheat("Button","Destroy GUI",function()
+    if game:GetService("CoreGui"):FindFirstChild("FinityUI") then
+        game:GetService("CoreGui"):FindFirstChild("FinityUI"):Destroy()
+    end
+end,{text = "Destroy"})
+
 credit:Cheat("Label","Scripting: Ghost-Ducky#7698")
 credit:Cheat("Label", "Ui: Project Finity")
 credit:Cheat("Button","Discord invite",function()
@@ -442,11 +452,6 @@ credit:Cheat("Button","Discord invite",function()
         if x then game:GetService("StarterGui"):SetCore("SendNotification",{Title = "Bread",Text = "Success copyied discord invite",Duration = 5}) end
     end
 end,{text = "Copy"})
-credit:Cheat("Button","Destroy GUI",function()
-    if game:GetService("CoreGui"):FindFirstChild("FinityUI") then
-        game:GetService("CoreGui"):FindFirstChild("FinityUI"):Destroy()
-    end
-end,{text = "Destroy"})
 
 --// Fast Tween
 function FastTween(instance, property, tweenInfo, delayTime)
