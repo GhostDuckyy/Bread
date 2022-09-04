@@ -33,7 +33,7 @@ getgenv().Setting = {
 
 --// script
 local tab_1 = w:Category("Main")
-local tab_2 = w:Category("Teleports")
+local tab_2 = w:Category("Waypoints")
 local credit = w:Category("Credit")
 
 local auto = tab_1:Sector("Automatic")
