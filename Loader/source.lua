@@ -16,8 +16,9 @@ local game_list = {
     --// Wheat Farming Simulator
     ["10106105124"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Wheat%20Farming%20Simulator.lua",
     --// Pickaxe Simulator
-    ["10204162989"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Pickaxe%20Simulator.lua"
-
+    ["10204162989"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Pickaxe%20Simulator.lua",
+    --// Slime Tower Tycoon
+    ["10675066724"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Slime%20Tower%20Tycoon.lua",
 }
 
 for ID, url in next, (game_list) do
