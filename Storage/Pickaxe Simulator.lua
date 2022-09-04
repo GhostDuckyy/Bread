@@ -21,12 +21,14 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 
 --// remote
 local mine_event = game:GetService("ReplicatedStorage").Remotes.Mining.MineBlock
+local equipBest_event = {pet = game:GetService("ReplicatedStorage").Remotes.Inventory.EquipBestPet,pickaxe = game:GetService("ReplicatedStorage").Remotes.Inventory.EquipBestPickaxe}
 
 --// Setting
 getgenv().Setting = {
     auto_mine = false,
     mine_target = "Random",
-    x_ray = {boolean = false,transparency = 0.5}
+    x_ray = {boolean = false,transparency = 0.5},
+    equipBest = {pet = false,pickaxe = false}
 }
 
 --// script
@@ -80,6 +82,28 @@ function auto_mine()
         end
     end)
 end
+
+auto:Cheat("Toggle","Equip Best Pickaxe",function(x)
+    getgenv().Setting.equipBest.pickaxe = x;
+    if x then
+        spawn(function()
+            while getgenv().Setting.equipBest.pickaxe and task.wait(.1) do
+                equipBest_event.pickaxe:FireServer()
+            end
+        end)
+    end
+end)
+
+auto:Cheat("Toggle","Equip Best Pets",function(x)
+    getgenv().Setting.equipBest.pet = x;
+    if x then
+        spawn(function()
+            while getgenv().Setting.equipBest.pet and task.wait(.1) do
+                equipBest_event.pet:FireServer()
+            end
+        end)
+    end
+end)
 
 getgenv().WS = 20;getgenv().JP = 55;
 client:Cheat("Slider","Walk speed", function(x)
