@@ -86,19 +86,19 @@ end,{min = 50,max = 500, suffix = " value"})
 
 local Plots = {}
 for i,v in ipairs(workspace["Plots"]:GetChildren()) do
-    if v:IsA("Folder") and not table.find(Plots,tostring(v.Name)) then
-        table.insert(Plots,tostring(v.Name))
+    if v:IsA("Folder") and not table.find(Plots,tostring("Plot "..v.Name)) then
+        table.insert(Plots,tostring("Plot "..v.Name))
     end
 end
 
-misc:Cheat("Dropdown","Goto Plot:",function(x)
+misc:Cheat("Dropdown","Waypoint",function(x)
     if LocalPlayer.Character then
-        local plot_name = tostring(x);
-        local hrp = LocalPlayer.Character.HumanoidRootPart
-
         pcall(function()
+            local plot_name = tostring(x):split("Plot ");
+            local hrp = LocalPlayer.Character.HumanoidRootPart
+
             for i,v in ipairs(workspace["Plots"]:GetChildren()) do
-                if v:IsA("Folder") and tostring(v.Name) == plot_name then
+                if v:IsA("Folder") and tostring(v.Name):find(plot_name[2]) then
                     for i2,v2 in ipairs(v:GetDescendants()) do
                         if v2:IsA("Part") and tostring(v2.Name):lower():find("plotteleport") or tostring(v2.Name):lower():match("plotteleport")  then
                             local cf = v2.CFrame * CFrame.new(0,1.5,0)
@@ -109,7 +109,7 @@ misc:Cheat("Dropdown","Goto Plot:",function(x)
             end
         end)
     end
-end,{options = Plots,default = "1"})
+end,{options = Plots,default = "None"})
 
 RunService.Stepped:Connect(function()
     if LocalPlayer.Character then
