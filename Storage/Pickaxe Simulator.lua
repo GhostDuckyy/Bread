@@ -108,7 +108,6 @@ end)
 auto:Cheat("button","Redeem all codes",function()
     local modules = require(game:GetService("ReplicatedStorage").Modules.Shared.TwitterCodeModule.ActiveCodes)
     for i,v in next, (modules) do
-        print(i,v)
         local code = tostring(i)
         game:GetService("ReplicatedStorage").Modules.Shared.TwitterCodeModule.EnterCode:InvokeServer(code)
     end
