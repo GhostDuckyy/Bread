@@ -91,7 +91,7 @@ for i,v in ipairs(workspace["Plots"]:GetChildren()) do
     end
 end
 
-misc:Cheat("Dropdown","Waypoint",function(x)
+misc:Cheat("Dropdown","Waypoints",function(x)
     if LocalPlayer.Character then
         pcall(function()
             local plot_name = tostring(x):split("Plot ");
@@ -147,7 +147,7 @@ function Grab_slime()
         end
     end)
     task.spawn(function()
-        while task.wait() do
+        while task.wait(.1) do
             if getgenv().Setting.Grab_slime ~= true then added:Disconnect() break; end
         end
     end)
