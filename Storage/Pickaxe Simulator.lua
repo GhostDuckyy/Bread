@@ -105,6 +105,15 @@ auto:Cheat("Toggle","Equip Best Pets",function(x)
     end
 end)
 
+auto:Cheat("button","Redeem all codes",function()
+    local modules = require(game:GetService("ReplicatedStorage").Modules.Shared.TwitterCodeModule.ActiveCodes)
+    for i,v in next, (modules) do
+        print(i,v)
+        local code = tostring(i)
+        game:GetService("ReplicatedStorage").Modules.Shared.TwitterCodeModule.EnterCode:InvokeServer(code)
+    end
+end,{text = "Redeem"})
+
 getgenv().WS = 20;getgenv().JP = 55;
 client:Cheat("Slider","Walk speed", function(x)
     getgenv().WS = x;
