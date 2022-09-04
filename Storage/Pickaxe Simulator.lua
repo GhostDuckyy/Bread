@@ -26,6 +26,7 @@ local mine_event = game:GetService("ReplicatedStorage").Remotes.Mining.MineBlock
 getgenv().Setting = {
     auto_mine = false,
     mine_target = "Random",
+    x_ray = {boolean = false,transparency = 0.5}
 }
 
 --// script
@@ -52,25 +53,27 @@ end)
 function auto_mine()
     spawn(function()
         while getgenv().Setting.auto_mine and task.wait(.5) do
-            if tostring(getgenv().Setting.mine_target):lower() == "random" then
-                local blocks = workspace:FindFirstChild("Blocks")
-                if blocks and LocalPlayer.Character then
-                    local hrp = LocalPlayer.Character.HumanoidRootPart
-                    for _,v in ipairs(blocks:GetChildren()) do
+            local list = getrenv()._G.blockList or false
+            if list ~= false then
+                if tostring(getgenv().Setting.mine_target):lower() == "random" then
+                    for i,v in next, list do
                         if getgenv().Setting.auto_mine ~= true then break; end
-                        if v:IsA("Model") and v:FindFirstChild("Block") then
-                            local mag = (hrp.Position - v["Block"].Position).Magnitude
-                            mine_event:FireServer(tostring(v.Name))
+                        mine_event:FireServer(tostring(i))
+                    end
+                elseif tostring(getgenv().Setting.mine_target):lower() == "ore only" then
+                    for i,v in next, list do
+                        for x,y in next, v do
+                            if tostring(y):lower():find("ore") or tostring(y):lower():find("lucky block") then
+                                if getgenv().Setting.auto_mine ~= true then break; end
+                                mine_event:FireServer(tostring(i))
+                            end
                         end
                     end
                 end
-            elseif tostring(getgenv().Setting.mine_target):lower() == "ore only" then
-                for i,v in next, getrenv()._G.blockList do
-                    for x,y in next, v do
-                        if tostring(y):lower():find("ore") then
-                            if getgenv().Setting.auto_mine ~= true then break; end
-                            mine_event:FireServer(tostring(i))
-                        end
+            else
+                for i,v in next, getrenv()._G do
+                    if tostring(i):lower() == "blocklist" and type(v) == "table" then
+                        list = v;
                     end
                 end
             end
@@ -86,6 +89,57 @@ client:Cheat("Slider","Jump Height", function(x)
     getgenv().JP = x;
 end,{min = 50,max = 500, suffix = " value"})
 
+client:Cheat("Toggle","X-ray",function(x)
+    getgenv().Setting.x_ray.boolean = x;
+    if x then
+        x_ray()
+    else
+        for i,v in ipairs(workspace["Blocks"]:GetChildren()) do
+            local block = v:FindFirstChild("Block")
+            if block then
+                block.Transparency = 0
+            end
+        end
+    end
+end)
+client:Cheat("Slider","Transparency",function(x)
+    getgenv().Setting.x_ray.transparency = x;
+end,{min = 0,max = 1,suffix = " value",precise = true})
+
+function x_ray()
+    for i,v in ipairs(workspace["Blocks"]:GetChildren()) do
+        local block = v:FindFirstChild("Block")
+        if block then
+            task.spawn(function()
+                while task.wait(.1) do
+                    if getgenv().Setting.x_ray.boolean ~= true then break; end
+                    local transparency = tonumber(getgenv().Setting.x_ray.transparency) or 0.5
+                    block.Transparency = transparency
+                end
+            end)
+        end
+    end
+    local added;
+    added = workspace["Blocks"].ChildAdded:Connect(function(v)
+        task.wait(.1)
+        if getgenv().Setting.x_ray.boolean then
+            local block = v:FindFirstChild("Block")
+            if block then
+                task.spawn(function()
+                    while task.wait(.1) do
+                        if getgenv().Setting.x_ray.boolean ~= true then break; end
+                        local transparency = tonumber(getgenv().Setting.x_ray.transparency) or 0.5
+                        block.Transparency = transparency
+                    end
+                end)
+            end
+        end
+    end)
+    while task.wait() do
+        if getgenv().Setting.x_ray.boolean ~= true then added:Disconnect() break; end
+    end
+end
+
 RunService.Stepped:Connect(function()
     if LocalPlayer.Character then
         local Humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
@@ -100,7 +154,7 @@ end)
 --// teleport
 do
     local tp_zone = tab_2:Sector("Zone")
-    local tp_chest = tab_2:Sector("Chest")
+    local tp_shop = tab_2:Sector("Shop")
     local tp_other = tab_2:Sector("Machine & Rewards")
     local tp_eggs = tab_2:Sector("Eggs")
 
@@ -149,10 +203,10 @@ do
             end
         end
 
-        tp_chest:Cheat("Dropdown","Chest list",function(x)
+        tp_shop:Cheat("Dropdown","Chest list",function(x)
             chest_select = x;
         end,{options = chest_list})
-        tp_chest:Cheat("button","Goto chest",function()
+        tp_shop:Cheat("button","Goto chest",function()
             if chest_select ~= nil then
                 local v = chest:FindFirstChild(chest_select)
                 if v and LocalPlayer.Character then
