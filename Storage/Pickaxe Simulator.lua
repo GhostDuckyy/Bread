@@ -22,13 +22,15 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 --// remote
 local mine_event = game:GetService("ReplicatedStorage").Remotes.Mining.MineBlock
 local equipBest_event = {pet = game:GetService("ReplicatedStorage").Remotes.Inventory.EquipBestPet,pickaxe = game:GetService("ReplicatedStorage").Remotes.Inventory.EquipBestPickaxe}
+local PurchaseZone_function = game:GetService("ReplicatedStorage").Remotes.Zone.PurchaseZone
 
 --// Setting
 getgenv().Setting = {
     auto_mine = false,
     mine_target = "Random",
     x_ray = {boolean = false,transparency = 0.5},
-    equipBest = {pet = false,pickaxe = false}
+    equipBest = {pet = false,pickaxe = false},
+    PurchaseZone = false,
 }
 
 --// script
@@ -38,6 +40,9 @@ local credit = w:Category("Credit")
 
 local auto = tab_1:Sector("Automatic")
 local client = tab_1:Sector("Client")
+local stat = tab_1:Sector("Stat")
+local surface_zone = tab_1:Sector("Surface zone")
+
 local infomation = credit:Sector("Infomation")
 
 auto:Cheat("Dropdown","Mine Target",function(x)
@@ -46,7 +51,7 @@ end,{
     options = {"Random","Ore only"},
 })
 
-auto:Cheat("Toggle","Auto mine",function(x)
+auto:Cheat("Toggle","Auto Mine",function(x)
     getgenv().Setting.auto_mine = x;
     if x then
         auto_mine()
@@ -82,6 +87,19 @@ function auto_mine()
         end
     end)
 end
+
+auto:Cheat("Toggle","Auto Purchase Zone",function(x)
+    getgenv().Setting.PurchaseZone = x;
+    if x then
+        spawn(function()
+            while getgenv().Setting.PurchaseZone and task.wait(.1) do
+                local CurrentZone = LocalPlayer["HiddenStats"]["ZonesUnlocked"]
+                local number = CurrentZone.Value + 1
+                PurchaseZone_function:InvokeServer(tonumber(number))
+            end
+        end)
+    end
+end)
 
 auto:Cheat("Toggle","Equip Best Pickaxe",function(x)
     getgenv().Setting.equipBest.pickaxe = x;
@@ -182,6 +200,56 @@ RunService.Stepped:Connect(function()
         end
     end
 end)
+
+--// stat
+do
+    local coins = LocalPlayer["HiddenStats"].Coins
+    local gems = LocalPlayer["HiddenStats"].Gems
+
+    getgenv().old_coins = 0
+    getgenv().old_gems = 0
+
+    local coins_label = stat:Cheat("Label","📢 nan Coins per second")
+    local gems_label = stat:Cheat("Label","💎 nan Gems per second")
+
+    task.spawn(function()
+        coins.Changed:Connect(function(number)
+            local different = math.ceil(number) - getgenv().old_coins
+            local str = string.format("📢 %s Coins per second",tostring(different))
+            coins_label:SetLabel(str)
+        end)
+
+        gems.Changed:Connect(function(number)
+            local different = math.ceil(number) - getgenv().old_gems
+            local str = string.format("💎 %s Gems per second",tostring(different))
+            gems_label:SetLabel(str)
+        end)
+
+        while task.wait(1) do
+            getgenv().old_coins = math.ceil(coins.Value)
+            getgenv().old_gems = math.ceil(gems.Value)
+        end
+    end)
+end
+
+do
+    if LocalPlayer.PlayerGui and LocalPlayer.PlayerGui:WaitForChild("SurfaceGuis") then
+        local surface = LocalPlayer.PlayerGui["SurfaceGuis"]
+
+        for i,v in ipairs(surface:GetChildren()) do
+            if v:IsA("SurfaceGui") and v:FindFirstChildOfClass("TextLabel") then
+                local t = v:FindFirstChildOfClass("TextLabel")
+                local str = tostring("📢 %s: %s"):format(tostring(v.Name),tostring(t.Text))
+                local label = surface_zone:Cheat(false,str)
+
+                RunService.Stepped:Connect(function()
+                    str = tostring("📢 %s: %s"):format(tostring(v.Name),tostring(t.Text))
+                    label:SetLabel(str)
+                end)
+            end
+        end
+    end
+end
 
 --// teleport
 do
