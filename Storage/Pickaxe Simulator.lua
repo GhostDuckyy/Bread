@@ -324,8 +324,10 @@ OldNameCall = hookmetamethod(game, "__namecall", newcclosure(function(self,...)
     local NamecallMethod = getnamecallmethod()
 
     if not checkcaller() and tostring(self.Name):lower():find("enterzone") and tostring(NamecallMethod) == "FireServer" then
-        if typeof(Args[1]) == "string" then
-            LocalPlayer["Zone"].Value = Args[1]
+        if typeof(Args[1]) == "string" and LocalPlayer["Zone"] then
+            if tostring(LocalPlayer["Zone"].Value):lower() ~= tostring(Args[1]):lower() then
+                LocalPlayer["Zone"].Value = Args[1]
+            end
         end
     end
     return OldNameCall(self,...)
