@@ -201,6 +201,7 @@ do
             if LocalPlayer.Character then
                 local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                 local cf = shop.CFrame * CFrame.new(0,1,0)
+
                 if hrp then
                     hrp.CFrame = cf
                 end
@@ -209,19 +210,30 @@ do
     end
 
     if zones then
+        local zone_list = {}
+        local zone_select = nil;
         for i,v in ipairs(zones:GetChildren()) do
-            if v:IsA("Folder") and v:FindFirstChild("SurfaceTeleport") then
-                tp_zone:Cheat("button",tostring(v.Name),function()
-                    if LocalPlayer.Character then
-                        local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                        local cf = v["SurfaceTeleport"].CFrame * CFrame.new(0,5,0)
-                        if hrp then
-                            hrp.CFrame = cf
-                        end
-                    end
-                end,{text = "Teleport"})
+            if v:IsA("Folder") and v:FindFirstChild("SurfaceTeleport") and not table.find(zone_list,tostring(v.Name)) then
+                table.insert(zone_list,tostring(v.Name))
             end
         end
+
+        tp_zone:Cheat("Dropdown","Select Zone",function(x)
+            zone_select = x;
+        end,{options = zone_list,default = "(none)"})
+        tp_zone:Cheat("button","Goto zone",function()
+            if zone_select ~= nil then
+                local z = zones:FindFirstChild(tostring(zone_select))
+                if z and z:FindFirstChild("SurfaceTeleport") and LocalPlayer.Character then
+                    local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    local cf = z["SurfaceTeleport"].CFrame * CFrame.new(0,5,0)
+
+                    if hrp then
+                        hrp.CFrame = cf
+                    end
+                end
+            end
+        end,{text = "Teleport"})
     end
 
     if chest then
@@ -235,12 +247,12 @@ do
             end
         end
 
-        tp_shop:Cheat("Dropdown","Chest list",function(x)
+        tp_shop:Cheat("Dropdown","Select Chest",function(x)
             chest_select = x;
-        end,{options = chest_list})
+        end,{options = chest_list,default = "(none)"})
         tp_shop:Cheat("button","Goto chest",function()
             if chest_select ~= nil then
-                local v = chest:FindFirstChild(chest_select)
+                local v = chest:FindFirstChild(tostring(chest_select))
                 if v and LocalPlayer.Character then
                     local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                     local cf = v.CFrame * CFrame.new(0,5,0)
@@ -279,12 +291,12 @@ do
             end
         end
 
-        tp_eggs:Cheat("Dropdown","Eggs list", function(x)
+        tp_eggs:Cheat("Dropdown","Select Eggs", function(x)
             eggs_select = x;
-        end, {options = eggs_list})
+        end, {options = eggs_list,default = "(none)"})
         tp_eggs:Cheat("button","Goto eggs",function()
             if eggs_select ~= nil then
-                local v = eggs:FindFirstChild(eggs_select)
+                local v = eggs:FindFirstChild(tostring(eggs_select))
                 if v and LocalPlayer.Character then
                     local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                     local cf = v.CFrame * CFrame.new(0,5,0)
@@ -293,7 +305,7 @@ do
                     end
                 end
             end
-        end)
+        end,{text = "Teleport"})
     end
 
 end
@@ -305,4 +317,16 @@ infomation:Cheat("button","Discord Invite",function()
     if setclipboard then setclipboard("https://discord.gg/TFUeFEESVv") end
 end,{text = "Copy"})
 
---// setup
+--// Forced Load Zone
+local OldNameCall;
+OldNameCall = hookmetamethod(game, "__namecall", newcclosure(function(self,...)
+    local Args = {...}
+    local NamecallMethod = getnamecallmethod()
+
+    if not checkcaller() and tostring(self.Name):lower():find("enterzone") and tostring(NamecallMethod) == "FireServer" then
+        if typeof(Args[1]) == "string" then
+            LocalPlayer["Zone"].Value = Args[1]
+        end
+    end
+    return OldNameCall(self,...)
+end))
