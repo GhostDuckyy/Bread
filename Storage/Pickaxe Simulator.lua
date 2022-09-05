@@ -41,7 +41,7 @@ local credit = w:Category("Credit")
 local auto = tab_1:Sector("Automatic")
 local client = tab_1:Sector("Client")
 local stat = tab_1:Sector("Stat")
-local surface_zone = tab_1:Sector("Surface zone")
+local surface_zone = tab_1:Sector("Surface")
 
 local infomation = credit:Sector("Infomation")
 
