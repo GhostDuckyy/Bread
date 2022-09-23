@@ -111,6 +111,10 @@ misc:Cheat("Dropdown","Waypoints",function(x)
     end
 end,{options = Plots,default = "None"})
 
+misc:Cheat("Button","Complete Obby",function()
+    Complete_Obby()
+end)
+
 RunService.Stepped:Connect(function()
     if LocalPlayer.Character then
         local Humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
@@ -184,4 +188,23 @@ function Merge()
             event.Merge:FireServer()
         end
     end)
+end
+
+function Complete_Obby()
+    local checkpoints = workspace:FindFirstChild("ObbyCheckpoints")
+    local button = workspace:FindFirstChild("ObbyButton")
+
+    if checkpoints and button then
+        for i,v in pairs(checkpoints:GetChildren()) do
+            if v:IsA("Part") then
+                firetouchinterest(LocalPlayer.Character.HumanoidRootPart, v, 0)
+                task.wait(.1)
+                firetouchinterest(LocalPlayer.Character.HumanoidRootPart, v, 1)
+            end
+        end
+        task.wait(.5)
+        firetouchinterest(LocalPlayer.Character.HumanoidRootPart, button["Button"], 0)
+        task.wait(.1)
+        firetouchinterest(LocalPlayer.Character.HumanoidRootPart, button["Button"], 1)
+    end
 end
