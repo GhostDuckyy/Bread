@@ -22,7 +22,9 @@ local game_list = {
 
     --// Slime Tower Tycoon
     ["10675066724"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Slime%20Tower%20Tycoon.lua",
-
+    
+    --// Lemonade Tycoon
+    ["10675042838"] = "https://raw.githubusercontent.com/GhostDuckyy/Bread/main/Storage/Lemonade%20Tycoon.lua",
 
 
 }
